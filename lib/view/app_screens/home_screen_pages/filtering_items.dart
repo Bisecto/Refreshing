@@ -69,14 +69,14 @@ class _FilteringItemState extends State<FilteringItem> {
         width: AppUtils.deviceScreenSize(context).width / 5.1,
         decoration: BoxDecoration(
           color:
-              selectedTerm == term ? AppColors.appMainColor : AppColors.white,
+              selectedTerm == term ? AppColors.appMainColor : AppColors.grey,
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              spreadRadius: 0,
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
+            // BoxShadow(
+            //   color: Colors.black.withOpacity(0.15),
+            //   spreadRadius: 0,
+            //   blurRadius: 10,
+            //   offset: const Offset(0, 4),
+            // ),
           ],
           borderRadius: BorderRadius.circular(10),
         ),

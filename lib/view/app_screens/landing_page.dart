@@ -122,7 +122,7 @@ class _LandingPageState extends State<LandingPage> {
                           ? AppColors.appMainColor
                           : AppColors.black,
                 ), //Icon(Icons.home),
-                label: '',
+                label: 'Home',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
@@ -132,7 +132,7 @@ class _LandingPageState extends State<LandingPage> {
                           ? AppColors.appMainColor
                           : AppColors.black,
                 ),
-                label: '',
+                label: 'Orders',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
@@ -142,7 +142,7 @@ class _LandingPageState extends State<LandingPage> {
                           ? AppColors.appMainColor
                           : AppColors.black,
                 ), //Icon(Icons.home),
-                label: '',
+                label: 'Reels',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
@@ -152,7 +152,7 @@ class _LandingPageState extends State<LandingPage> {
                           ? AppColors.appMainColor
                           : AppColors.black,
                 ), //Icon(Icons.home),
-                label: '',
+                label: 'Rewards',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
@@ -162,7 +162,7 @@ class _LandingPageState extends State<LandingPage> {
                           ? AppColors.appMainColor
                           : AppColors.black,
                 ), //Icon(Icons.home),
-                label: '',
+                label: 'Menu',
               ),
             ],
           ),

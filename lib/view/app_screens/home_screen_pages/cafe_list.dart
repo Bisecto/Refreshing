@@ -10,79 +10,99 @@ import '../../../utills/app_utils.dart';
 import '../../../utills/app_validator.dart';
 import '../../widgets/app_custom_text.dart';
 import '../../widgets/form_input.dart';
+import 'filtering_items.dart';
 
-class CafeList extends StatelessWidget {
+class CafeList extends StatefulWidget {
   CafeList({super.key});
 
+  @override
+  State<CafeList> createState() => _CafeListState();
+}
+
+class _CafeListState extends State<CafeList> {
   final List<String> sessions = [
     'ROBOT BARISTA BAR',
     'Hot food machine',
     'Revival Cafe 3',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 3',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 4',
-    // 'Revival Cafe 4',
   ];
+
   final _searchController = TextEditingController();
+
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomTextFormField(
-          hint: 'Search Location, Meals and more....',
-          label: '',
-          controller: _searchController,
-          borderColor: AppColors.textFormFieldBackgroundColor,
-          backgroundColor: AppColors.textFormFieldBackgroundColor,
-          widget: Icon(Icons.search),
-
-          //validator: AppValidator.validateTextfield,
-        ),
-        SizedBox(height: 10),
-        TextStyles.textHeadings(textValue: "Around You", textSize: 18),
-        SizedBox(height: 10),
-
-        Container(
-          height: sessions.length * 320,
-          child: ListView.builder(
-            itemCount: sessions.length,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  //AppNavigator.pushAndStackPage(context, page: SingleSessionResult(session: sessions[index], isBackKey: true,
-                  //   )
-                  //   );
-                },
-                child: SessionContainer(
-                  session: sessions[index],
-                  context: context,
-                ),
-              );
-            },
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              isSelected = !isSelected;
+            });
+          },
+          child: CustomTextFormField(
+            hint: 'Search Location, Meals and more....',
+            label: '',
+            enabled: isSelected,
+            controller: _searchController,
+            borderColor: AppColors.textFormFieldBackgroundColor,
+            backgroundColor: AppColors.textFormFieldBackgroundColor,
+            widget: Icon(Icons.search),
+            suffixIcon:
+                isSelected
+                    ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _searchController.clear();
+                          isSelected = !isSelected;
+                        });
+                      },
+                      child: Icon(Icons.cancel_outlined),
+                    )
+                    : null,
           ),
         ),
+        if (isSelected) ...[
+          SizedBox(height: 10),
+
+          FilteringItem(selectedTerm: (String value) {}),
+          filteringOptionContainer(),
+        ],
+
+        if (!isSelected) ...[
+          SizedBox(height: 10),
+          TextStyles.textHeadings(textValue: "Around You", textSize: 18),
+          Container(
+            height: sessions.length * 320,
+            child: ListView.builder(
+              itemCount: sessions.length,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    //AppNavigator.pushAndStackPage(context, page: SingleSessionResult(session: sessions[index], isBackKey: true,
+                    //   )
+                    //   );
+                  },
+                  child: itemContainer(
+                    session: sessions[index],
+                    context: context,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ],
     );
   }
 
-  Widget SessionContainer({required String session, required context}) {
+  Widget itemContainer({required String session, required context}) {
     return GestureDetector(
-      onTap: (){
-            AppNavigator.pushAndStackPage(
-              context,
-              page: const SingleCafe(),
-            );
+      onTap: () {
+        AppNavigator.pushAndStackPage(context, page: const SingleCafe());
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -150,12 +170,12 @@ class CafeList extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all( 7.0),
+                  padding: const EdgeInsets.all(7.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextStyles.textHeadings(textValue: session, textSize: 18),
-                     SvgPicture.asset(AppIcons.save)
+                      SvgPicture.asset(AppIcons.save),
                     ],
                   ),
                 ),
@@ -177,7 +197,7 @@ class CafeList extends StatelessWidget {
                       Row(
                         children: [
                           Icon(Icons.star, color: AppColors.yellow, size: 15),
-                          CustomText(text: "4",),
+                          CustomText(text: "4"),
                         ],
                       ),
                       Container(
@@ -206,7 +226,6 @@ class CafeList extends StatelessWidget {
                           ],
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -214,6 +233,81 @@ class CafeList extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget filteringOptionContainer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+        TextStyles.textHeadings(textValue: "Top Categories", textSize: 20),
+        SizedBox(height: 15),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {},
+                child: _buildFilterOption('Coffee & Espresso'),
+              ),
+              _buildFilterOption('Tea & Infusions'),
+              InkWell(
+                // onTap: () {
+                //   AppNavigator.pushAndStackPage(context,
+                //       page: NotificationSettingsScreen());
+                // },
+                child: _buildFilterOption('Combos & Deals'),
+              ),
+              _buildFilterOption('Specialty Drink'),
+              _buildFilterOption('Cold Deverages'),
+              _buildFilterOption('Sodas & Bottled Drinks'),
+              _buildFilterOption('Snacks & Bites'),
+            ],
+          ),
+        ),
+        SizedBox(height: 15),
+
+        TextStyles.textHeadings(textValue: "Top Locations", textSize: 20),
+        SizedBox(height: 15),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {},
+                child: _buildFilterOption('Dublin City Centre'),
+              ),
+              _buildFilterOption('Blanchardstown'),
+              InkWell(
+                // onTap: () {
+                //   AppNavigator.pushAndStackPage(context,
+                //       page: NotificationSettingsScreen());
+                // },
+                child: _buildFilterOption('East Coast Cafe'),
+              ),
+              _buildFilterOption('Clontarf'),
+
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterOption(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: CustomText(text: title, size: 18),
       ),
     );
   }
