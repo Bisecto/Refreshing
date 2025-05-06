@@ -122,7 +122,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                       prefixIcon: widget.widget != null
                           ? Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
+                                  const EdgeInsets.only(left: 0),
                               child: GestureDetector(
                                 onTap: () {
                                   if (widget.isPasswordField) {
@@ -150,7 +150,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                       ),
                       hintText: widget.hint,
                       hintStyle: GoogleFonts.poppins(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: AppColors.black,
                       ),
                       border: InputBorder.none,
