@@ -150,8 +150,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                       ),
                       hintText: widget.hint,
                       hintStyle: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: AppColors.lightDivider,
+                        fontSize: 16,
+                        color: AppColors.black,
                       ),
                       border: InputBorder.none,
                       contentPadding:

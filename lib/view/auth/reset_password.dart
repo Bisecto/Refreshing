@@ -44,98 +44,80 @@ class _ResetPasswordState extends State<ResetPassword> {
       backgroundColor: AppColors.white,
       body: SafeArea(
         // bottom: 50,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextStyles.textSubHeadings(
-                          textValue: "Sign In",
-                          textColor: AppColors.black,
-                          textSize: 25),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const CustomText(
-                        text: 'Forgot your password? Don’t worry, enter your '
-                            'email to reset your current password.',
-                        size: 16,
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              CustomTextFormField(
-                                label: '',
-                                isPasswordField: true,
-                                backgroundColor:
-                                AppColors.textFormFieldBackgroundColor,
-                                validator: AppValidator.validateTextfield,
-                                controller: _passwordController,
-                                hint: 'Password',
-                                borderColor:
-                                AppColors.textFormFieldBackgroundColor,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              CustomTextFormField(
-                                label: '',
-                                isPasswordField: true,
-                                backgroundColor:
-                                AppColors.textFormFieldBackgroundColor,
-                                validator: AppValidator.validateTextfield,
-                                controller: _confirmPasswordController,
-                                hint: 'Confirm Password',
-                                borderColor:
-                                AppColors.textFormFieldBackgroundColor,
-                              ),
-                                                           const SizedBox(
-                                height: 10,
-                              ),
-                              FormButton(
-                                onPressed: () async {},
-                                text: 'Submit',
-                                borderColor: AppColors.appMainColor,
-                                bgColor: AppColors.appMainColor,
-                                textColor: AppColors.white,
-                                borderRadius: 12,
-                                height: 50,
-                              )
-                            ],
-                          )),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              //mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 20,
                 ),
-              ),
-              TextStyles.richTexts(
-                  text1: 'Have an account with us? ',
-                  text2: "Login",
+                TextStyles.textHeadings(
+                    textValue: "Reset Password",
+                    textColor: AppColors.black,
+                    textSize: 30),
+                const SizedBox(
+                  height: 20,
+                ),
+                const CustomText(
+                  text: 'Create a new, strong password that only you can remember.',
                   size: 16,
-                  onPress2: () {
-                    AppNavigator.pushAndRemovePreviousPages(context,
-                        page: SignInScreen());
-                  },
-                  weight: FontWeight.w400,
-                  color2: AppColors.blue)
-            ],
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        CustomTextFormField(
+                          label: '',
+                          isPasswordField: true,
+                          backgroundColor:
+                          AppColors.textFormFieldBackgroundColor,
+                          validator: AppValidator.validateTextfield,
+                          controller: _passwordController,
+                          hint: 'New Password',
+                          borderColor:
+                          AppColors.textFormFieldBackgroundColor,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextFormField(
+                          label: '',
+                          isPasswordField: true,
+                          backgroundColor:
+                          AppColors.textFormFieldBackgroundColor,
+                          validator: AppValidator.validateTextfield,
+                          controller: _confirmPasswordController,
+                          hint: 'Confirm Password',
+                          borderColor:
+                          AppColors.textFormFieldBackgroundColor,
+                        ),
+                                                     const SizedBox(
+                          height: 10,
+                        ),
+                        FormButton(
+                          onPressed: () async {},
+                          text: 'Verify',
+                          borderColor: AppColors.appMainColor,
+                          bgColor: AppColors.appMainColor,
+                          textColor: AppColors.white,
+                          borderRadius: 12,
+                          height: 50,
+                        )
+                      ],
+                    )),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),

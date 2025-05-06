@@ -9,14 +9,14 @@ class AppColors {
 
   static const Color darkGreen = Color(0xff185C32);
   static const Color white = Color(0xFFFFFFFF);
-  static const Color blue = Color(0xFF00119D);
+  static const Color blue = Color(0xff1769FF);
   static const Color red = Color(0xFFEE3720);
   static const Color yellow = Color(0xffFFA02E);
   static const Color grey = Color(0xFFE8E8E8);
 
 //light colors
   static const Color appMainColor = Color(0xff1DCDFC);
-  static const Color textFormFieldBackgroundColor = Color(0xffF8F8F8);
+  static const Color textFormFieldBackgroundColor = Color(0xffefefef);
   static const Color lightPurple = Color(0xffC6B1DE);
   static const Color orange = Color(0xffFFA02E);
   static const Color lightOrange = Color(0xffFFF3D5);
@@ -32,7 +32,7 @@ class AppColors {
   static const Color lightShadowAmber = Color(0xFFDAC08C);
   static const Color lightShadowPurple = Color(0xFFD1BDE0);
 
-  static const Color textColor = Color(0xff484848);
+  static const Color textColor = Color(0xff4A4863);
   static const Color textColor2 = Color(0xff828DA9);
 
   static const Color amountMainValueColor = Color(0xff050505);

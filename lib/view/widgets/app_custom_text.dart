@@ -1,4 +1,3 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,50 +28,55 @@ class CustomText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return Text(text ?? '',
-        textDirection: TextDirection.ltr,
-        textAlign: textAlign,
-        maxLines: maxLines,
-        softWrap: true,
-        overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.plusJakartaSans(
-          //fontFamily: "CeraPro",
-          decoration:
-              (underline) ? TextDecoration.underline : TextDecoration.none,
-          decorationColor: AppColors.green,
-          letterSpacing: spacing!,
-          fontSize: size != null ? (size! + 0.0) : 12,
-          color: color ?? Colors.black,
-          //   fontWeight: weight ?? FontWeight.normal,
-        )
-        // TextStyle(
-        //   fontFamily: "CeraPro",
-        //   decoration:
-        //       (underline) ? TextDecoration.underline : TextDecoration.none,
-        //   decorationColor: AppColors.green,
-        //   letterSpacing: spacing!,
-        //   fontSize: size ?? 16,
-        //   color: color ?? Colors.black,
+    return Text(
+      text ?? '',
+      textDirection: TextDirection.ltr,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      softWrap: true,
+      overflow: TextOverflow.ellipsis,
+      style: GoogleFonts.inter(
+        //fontFamily: "CeraPro",
+        decoration:
+            (underline) ? TextDecoration.underline : TextDecoration.none,
+        decorationColor: AppColors.green,
+        letterSpacing: spacing!,
+        fontSize: size != null ? (size! + 0.0) : 12,
+        color: color ?? Colors.black,
         //   fontWeight: weight ?? FontWeight.normal,
-        // ),
-        );
+      ),
+      // TextStyle(
+      //   fontFamily: "CeraPro",
+      //   decoration:
+      //       (underline) ? TextDecoration.underline : TextDecoration.none,
+      //   decorationColor: AppColors.green,
+      //   letterSpacing: spacing!,
+      //   fontSize: size ?? 16,
+      //   color: color ?? Colors.black,
+      //   fontWeight: weight ?? FontWeight.normal,
+      // ),
+    );
   }
 }
 
 class TextStyles {
-  static textHeadings(
-      {required String textValue,FontWeight fontWeight=FontWeight.w800, double textSize = 18, Color? textColor}) {
+  static textHeadings({
+    required String textValue,
+    FontWeight fontWeight = FontWeight.bold,
+    double textSize = 18,
+    Color? textColor,
+  }) {
     return Text(
       textValue,
       textDirection: TextDirection.ltr,
-      style: GoogleFonts.plusJakartaSans(
+      style: GoogleFonts.inter(
         textStyle: TextStyle(
-            fontStyle: FontStyle.normal,
-            color: textColor,
-            fontSize: textSize,
+          fontStyle: FontStyle.normal,
+          color: textColor,
+          fontSize: textSize,
 
-            fontWeight: fontWeight),
+          fontWeight: fontWeight,
+        ),
       ),
       textAlign: TextAlign.center,
     );
@@ -87,11 +91,18 @@ class TextStyles {
     return Text(
       textValue,
       textDirection: TextDirection.ltr,
-      style: TextStyle(
+      style: GoogleFonts.inter(
+        textStyle: TextStyle(
           fontStyle: FontStyle.normal,
           color: textColor,
           fontSize: textSize,
-         ),
+        ),
+      ),
+      // style: TextStyle(
+      //     fontStyle: FontStyle.normal,
+      //     color: textColor,
+      //     fontSize: textSize,
+      //    ),
       textAlign: (centerText) ? TextAlign.center : TextAlign.start,
     );
   }
@@ -110,133 +121,150 @@ class TextStyles {
       //softWrap: true,
       maxLines: 3,
       softWrap: true,
-        style: GoogleFonts.plusJakartaSans(
-          textStyle: TextStyle(
-              fontStyle: FontStyle.normal,
-              color: textColor,
-              fontSize: textSize,
-
-              ),
+      style: GoogleFonts.plusJakartaSans(
+        textStyle: TextStyle(
+          fontStyle: FontStyle.normal,
+          color: textColor,
+          fontSize: textSize,
         ),
+      ),
     );
   }
 
-  static richTexts(
-      {String? text1,
-      String? text2,
-      double size = 16,
-      String text3 = '',
-      String text4 = '',
-      String text5 = '',
-      String text6 = '',
-      String text7 = '',
-      String text8 = '',
-      String text9 = '',
-      String text10 = '',
-      FontWeight? weight = FontWeight.w400,
-      Function? onPress1,
-      bool centerText = false,
-      Color? color2 = AppColors.green,
-      Color? color5 = AppColors.green,
-      Color? color6 = AppColors.green,
-      Color? color7 = AppColors.green,
-      Color? color8 = AppColors.green,
-      Color? color9 = AppColors.green,
-      Color? color10 = AppColors.green,
-      Color? color = const Color.fromARGB(255, 73, 71, 71),
-      TextDecoration decoration = TextDecoration.none,
-      Function? onPress2}) {
+  static richTexts({
+    String? text1,
+    String? text2,
+    double size = 16,
+    String text3 = '',
+    String text4 = '',
+    String text5 = '',
+    String text6 = '',
+    String text7 = '',
+    String text8 = '',
+    String text9 = '',
+    String text10 = '',
+    FontWeight? weight = FontWeight.w400,
+    Function? onPress1,
+    bool centerText = false,
+    Color? color2 = AppColors.green,
+    Color? color5 = AppColors.green,
+    Color? color6 = AppColors.green,
+    Color? color7 = AppColors.green,
+    Color? color8 = AppColors.green,
+    Color? color9 = AppColors.green,
+    Color? color10 = AppColors.green,
+    Color? color = const Color.fromARGB(255, 73, 71, 71),
+    TextDecoration decoration = TextDecoration.none,
+    Function? onPress2,
+  }) {
     return RichText(
       textAlign: (centerText) ? TextAlign.center : TextAlign.justify,
       textDirection: TextDirection.ltr,
       softWrap: true,
-      text: TextSpan(children: [
-        TextSpan(
-          text: text1,
-          style: TextStyle(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: text1,
+            style: TextStyle(
               fontStyle: FontStyle.normal,
               color: color,
               fontSize: size,
-              fontWeight: weight),
-        ),
-        TextSpan(
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              onPress1!();
-            },
-          text: text2,
-          style: TextStyle(
+              fontWeight: weight,
+            ),
+          ),
+          TextSpan(
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onPress1!();
+                  },
+            text: text2,
+            style: TextStyle(
               decoration: decoration,
               fontStyle: FontStyle.normal,
               color: color2,
               fontSize: size,
-              fontWeight: weight),
-        ),
-        TextSpan(
-          text: text3,
-          style: TextStyle(
+              fontWeight: weight,
+            ),
+          ),
+          TextSpan(
+            text: text3,
+            style: TextStyle(
               fontStyle: FontStyle.normal,
               color: color,
               fontSize: size,
-              fontWeight: weight),
-        ),
-        TextSpan(
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                onPress2!();
-              },
+              fontWeight: weight,
+            ),
+          ),
+          TextSpan(
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onPress2!();
+                  },
             text: text4,
-            style:
-                TextStyle(color: color2, fontSize: size, fontWeight: weight)),
-        TextSpan(
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                onPress2!();
-              },
+            style: TextStyle(color: color2, fontSize: size, fontWeight: weight),
+          ),
+          TextSpan(
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onPress2!();
+                  },
             text: text5,
-            style:
-                TextStyle(color: color5, fontSize: size, fontWeight: weight)),
-        TextSpan(
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                onPress2!();
-              },
+            style: TextStyle(color: color5, fontSize: size, fontWeight: weight),
+          ),
+          TextSpan(
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onPress2!();
+                  },
             text: text6,
-            style:
-                TextStyle(color: color6, fontSize: size, fontWeight: weight)),
-        TextSpan(
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                onPress2!();
-              },
+            style: TextStyle(color: color6, fontSize: size, fontWeight: weight),
+          ),
+          TextSpan(
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onPress2!();
+                  },
             text: text7,
-            style:
-                TextStyle(color: color7, fontSize: size, fontWeight: weight)),
-        TextSpan(
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                onPress2!();
-              },
+            style: TextStyle(color: color7, fontSize: size, fontWeight: weight),
+          ),
+          TextSpan(
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onPress2!();
+                  },
             text: text8,
-            style:
-                TextStyle(color: color8, fontSize: size, fontWeight: weight)),
-        TextSpan(
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                onPress2!();
-              },
+            style: TextStyle(color: color8, fontSize: size, fontWeight: weight),
+          ),
+          TextSpan(
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onPress2!();
+                  },
             text: text9,
-            style:
-                TextStyle(color: color9, fontSize: size, fontWeight: weight)),
-        TextSpan(
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                onPress2!();
-              },
+            style: TextStyle(color: color9, fontSize: size, fontWeight: weight),
+          ),
+          TextSpan(
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    onPress2!();
+                  },
             text: text10,
-            style:
-                TextStyle(color: color10, fontSize: size, fontWeight: weight)),
-      ]),
+            style: TextStyle(
+              color: color10,
+              fontSize: size,
+              fontWeight: weight,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:refreshing_co/view/auth/reset_password_screen.dart';
+import 'package:refreshing_co/view/auth/sign_in_screen.dart';
 import 'package:social_login_buttons/social_login_buttons.dart';
 
 import '../../../res/app_colors.dart';
@@ -44,38 +45,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-        // bottom: 50,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  //mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextStyles.textSubHeadings(
-                        textValue: "Sign In",
+         //bottom: 50,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 20),
+                      TextStyles.textHeadings(
+                        textValue: "Sign Up",
                         textColor: AppColors.black,
-                        textSize: 25),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const CustomText(
-                      text:
-                          'Looks like you don’t have an account. Let’s create a new account for you.',
-                      size: 16,
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Form(
+                        textSize: 30,
+                      ),
+                      const SizedBox(height: 20),
+                      const CustomText(
+                        text:
+                            'Looks like you don’t have an account. Let’s create a new account for you.',
+                        size: 16,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        color: AppColors.textColor,
+                      ),
+                      const SizedBox(height: 20),
+                      Form(
                         key: _formKey,
                         child: Column(
                           children: [
@@ -89,9 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   AppColors.textFormFieldBackgroundColor,
                               validator: AppValidator.validateTextfield,
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            const SizedBox(height: 10),
                             CustomTextFormField(
                               hint: 'Email',
                               label: '',
@@ -102,9 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   AppColors.textFormFieldBackgroundColor,
                               validator: AppValidator.validateTextfield,
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            const SizedBox(height: 10),
                             CustomTextFormField(
                               label: '',
                               isPasswordField: true,
@@ -116,23 +110,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               borderColor:
                                   AppColors.textFormFieldBackgroundColor,
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            const SizedBox(height: 10),
                             CustomTextFormField(
                               label: '',
                               isPasswordField: true,
                               backgroundColor:
-                              AppColors.textFormFieldBackgroundColor,
+                                  AppColors.textFormFieldBackgroundColor,
                               validator: AppValidator.validateTextfield,
                               controller: _confirmPasswordController,
                               hint: 'Confirm Password',
                               borderColor:
-                              AppColors.textFormFieldBackgroundColor,
+                                  AppColors.textFormFieldBackgroundColor,
                             ),
-                            const SizedBox(
-                              height: 10,
+                            const SizedBox(height: 10),
+                            GestureDetector(
+                              onTap: () {
+                                AppNavigator.pushAndRemovePreviousPages(context, page: SignInScreen());
+                              },
+
+                              child: TextStyles.richTexts(
+                                text1: 'By selecting Create Account below, I agree to',
+                                text2: " Terms of Service ",
+                                text3: "& ",
+                                text4: "Privacy Policy",
+                                size: 13.5,
+                                weight: FontWeight.w500,
+                                color2: AppColors.blue,
+                              ),
                             ),
+                            const SizedBox(height: 10),
 
                             FormButton(
                               onPressed: () async {},
@@ -142,59 +148,64 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               textColor: AppColors.white,
                               borderRadius: 12,
                               height: 50,
-                            )
+                            ),
                           ],
-                        )),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Row(children: <Widget>[
-                      Expanded(
-                          child: Divider(
-                        color: AppColors.textFormFieldBackgroundColor,
-                      )),
-                      Text("  OR  "),
-                      Expanded(
-                          child: Divider(
-                        color: AppColors.textFormFieldBackgroundColor,
-                      )),
-                    ]),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SocialLoginButton(
-                      buttonType: SocialLoginButtonType.apple,
-                      onPressed: () {},
-                      borderRadius: 12,
-                      backgroundColor: AppColors.textFormFieldBackgroundColor,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SocialLoginButton(
-                      buttonType: SocialLoginButtonType.google,
-                      onPressed: () {},
-                      borderRadius: 12,
-                      backgroundColor: AppColors.textFormFieldBackgroundColor,
-                    )
-                  ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Divider(
+                              color: AppColors.textFormFieldBackgroundColor,
+                            ),
+                          ),
+                          Text("  OR  "),
+                          Expanded(
+                            child: Divider(
+                              color: AppColors.textFormFieldBackgroundColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      SocialLoginButton(
+                        buttonType: SocialLoginButtonType.google,
+                        onPressed: () {},
+                        imageWidth: 30,
+
+                        borderRadius: 12,
+                        backgroundColor: AppColors.textFormFieldBackgroundColor,
+                      ),
+
+                      const SizedBox(height: 10),
+                      SocialLoginButton(
+                        buttonType: SocialLoginButtonType.apple,
+                        onPressed: () {},
+                        borderRadius: 12,
+                        imageWidth: 30,
+                        backgroundColor: AppColors.textFormFieldBackgroundColor,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            GestureDetector(
-              onTap: (){
+              GestureDetector(
+                onTap: () {
+                  AppNavigator.pushAndRemovePreviousPages(context, page: SignInScreen());
+                },
 
-              },
-              child:  TextStyles.richTexts(
+                child: TextStyles.richTexts(
                   text1: 'Have an account with us? ',
-                  text2: "create one",
-                  size: 16,
-                  weight: FontWeight.w400,
-                  color2: AppColors.blue)
-            )
-            ,
-
-          ],
+                  text2: "Login",
+                  size: 14,
+                  weight: FontWeight.w600,
+                  color2: AppColors.blue,
+                ),
+              ),
+              SizedBox(height: 20,),
+            ],
+          ),
         ),
       ),
     );
