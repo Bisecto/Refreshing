@@ -18,34 +18,35 @@ class _CustomAppBarState extends State<CustomAppBar> {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(0.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.lightPurple,
-                  child: TextStyles.textHeadings(textValue: 'P'),
-                ),
+                Icon(Icons.location_on_outlined,size: 25,),
                 SizedBox(
                   width: 5,
                 ),
-                TextStyles.textSubHeadings(textValue: 'Hey Precious!'),
-                SizedBox(
-                  width: 3,
-                ),
-                SvgPicture.asset(
-                  AppIcons.finger,
-                  height: 20,
-                  width: 20,
-                )
+                TextStyles.textHeadings(textValue: 'Ireland'),
+
               ],
             ),
-            SvgPicture.asset(
-              AppIcons.notification,
-              height: 20,
-              width: 20,
+            Row(
+              children: [
+                SvgPicture.asset(
+                  AppIcons.notification,
+                  height: 25,
+                  width: 25,
+                ),SizedBox(
+                  width: 5,
+                ),
+                SvgPicture.asset(
+                  AppIcons.bag,
+                  height: 25,
+                  width: 25,
+                ),
+              ],
             ),
           ],
         ),

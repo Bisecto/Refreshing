@@ -5,7 +5,9 @@ import 'package:refreshing_co/view/app_screens/single_cafe/single_cafe.dart';
 import '../../../../res/app_colors.dart';
 import '../../../res/app_images.dart';
 import '../../../utills/app_utils.dart';
+import '../../../utills/app_validator.dart';
 import '../../widgets/app_custom_text.dart';
+import '../../widgets/form_input.dart';
 
 class CafeList extends StatelessWidget {
   CafeList({super.key});
@@ -26,32 +28,49 @@ class CafeList extends StatelessWidget {
     'Revival Cafe 4',
     'Revival Cafe 4',
   ];
+  final _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: sessions.length * 351,
-      child: ListView.builder(
-        itemCount: sessions.length,
-        padding: EdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return GestureDetector(
-              onTap: () {
-                //AppNavigator.pushAndStackPage(context, page: SingleSessionResult(session: sessions[index], isBackKey: true,
-                //   )
-                //   );
-              },
-              child:
-                  SessionContainer(session: sessions[index], context: context));
-        },
-      ),
+    return Column(
+      children: [
+        CustomTextFormField(
+          hint: 'Search Location, Meals and more....',
+          label: '',
+          controller: _searchController,
+          borderColor:
+          AppColors.textFormFieldBackgroundColor,
+          backgroundColor:
+          AppColors.textFormFieldBackgroundColor,
+          widget: Icon(Icons.search),
+
+          //validator: AppValidator.validateTextfield,
+        ),
+        Container(
+          height: sessions.length * 351,
+          child: ListView.builder(
+            itemCount: sessions.length,
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                  onTap: () {
+                    //AppNavigator.pushAndStackPage(context, page: SingleSessionResult(session: sessions[index], isBackKey: true,
+                    //   )
+                    //   );
+                  },
+                  child:
+                      SessionContainer(session: sessions[index], context: context));
+            },
+          ),
+        ),
+      ],
     );
   }
 
   Widget SessionContainer({required String session, required context}) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
         height: 335,
         padding: const EdgeInsets.all(0),
