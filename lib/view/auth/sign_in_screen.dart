@@ -121,7 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               onPressed: () async {
                                 AppNavigator.pushAndRemovePreviousPages(
                                   context,
-                                  page: LandingPage(),
+                                  page: LandingPage(selectedIndex: 0,),
                                 );
                               },
                               text: 'Login',

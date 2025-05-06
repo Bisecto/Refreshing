@@ -23,7 +23,9 @@ import '../../utills/shared_preferences.dart';
 import '../important_pages/no_internet.dart';
 
 class LandingPage extends StatefulWidget {
-  const LandingPage({super.key});
+  int selectedIndex;
+
+  LandingPage({super.key, required this.selectedIndex});
 
   @override
   State<LandingPage> createState() => _LandingPageState();
@@ -36,21 +38,23 @@ class _LandingPageState extends State<LandingPage> {
 
   StreamSubscription<ConnectivityStatus>? _connectivitySubscription;
   bool isNotification = false;
+
   @override
   void initState() {
     // TODO: implement initState
-
+    _currentIndex = widget.selectedIndex;
 
     _checkConnectivity();
-    _connectivitySubscription =
-        Connectivity().onConnectivityChanged.listen(_handleConnectivity);
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen(
+      _handleConnectivity,
+    );
 
     landPageScreens = [
-      const HomeScreen(),
+      HomeScreen(onPageChanged: _onPageChanged),
       const CartScreen(),
       const RewardScreen(),
-       AccountScreen(),
-       SettingsScreen()
+      AccountScreen(),
+      SettingsScreen(),
     ];
     super.initState();
   }
@@ -96,18 +100,14 @@ class _LandingPageState extends State<LandingPage> {
         ? Scaffold(
           backgroundColor: AppColors.white,
 
-          body: IndexedStack(
-            children: [
-              landPageScreens[_currentIndex],
-            ],
-          ),
+          body: IndexedStack(children: [landPageScreens[_currentIndex]]),
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: AppColors.white,
             //fixedColor:   AppColors.white,
             showUnselectedLabels: true,
             currentIndex: _currentIndex,
             selectedItemColor: AppColors.appMainColor,
-            unselectedItemColor:  AppColors.lightDivider,
+            unselectedItemColor: AppColors.lightDivider,
             onTap: (index) {
               setState(() {
                 _currentIndex = index;
@@ -117,49 +117,55 @@ class _LandingPageState extends State<LandingPage> {
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   AppIcons.home,
-                  color: _currentIndex == 0
-                      ? AppColors.appMainColor
-                      : AppColors.black,
+                  color:
+                      _currentIndex == 0
+                          ? AppColors.appMainColor
+                          : AppColors.black,
                 ), //Icon(Icons.home),
                 label: '',
               ),
               BottomNavigationBarItem(
-                icon: SvgPicture.asset(AppIcons.bag,
-                    color: _currentIndex == 1
-                        ? AppColors.appMainColor
-                        :  AppColors.black),
+                icon: SvgPicture.asset(
+                  AppIcons.bag,
+                  color:
+                      _currentIndex == 1
+                          ? AppColors.appMainColor
+                          : AppColors.black,
+                ),
                 label: '',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   AppIcons.goft,
-                  color: _currentIndex == 2
-                      ? AppColors.appMainColor
-                      :  AppColors.black,
+                  color:
+                      _currentIndex == 2
+                          ? AppColors.appMainColor
+                          : AppColors.black,
                 ), //Icon(Icons.home),
                 label: '',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   AppIcons.user,
-                  color: _currentIndex == 3
-                      ? AppColors.appMainColor
-                      : AppColors.black,
+                  color:
+                      _currentIndex == 3
+                          ? AppColors.appMainColor
+                          : AppColors.black,
                 ), //Icon(Icons.home),
                 label: '',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   AppIcons.settings,
-                  color: _currentIndex == 4
-                      ? AppColors.appMainColor
-                      :  AppColors.black,
+                  color:
+                      _currentIndex == 4
+                          ? AppColors.appMainColor
+                          : AppColors.black,
                 ), //Icon(Icons.home),
                 label: '',
               ),
             ],
           ),
-
         )
         : No_internet_Page(onRetry: _checkConnectivity);
   }

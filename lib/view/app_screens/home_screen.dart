@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:refreshing_co/res/app_images.dart';
 import 'package:refreshing_co/utills/app_utils.dart';
 import 'package:refreshing_co/view/widgets/app_custom_text.dart';
@@ -8,12 +9,15 @@ import 'package:refreshing_co/view/widgets/form_button.dart';
 import 'package:refreshing_co/view/widgets/form_input.dart';
 
 import '../../res/app_colors.dart';
+import '../../res/app_icons.dart';
 import 'home_screen_pages/app_bar.dart';
 import 'home_screen_pages/cafe_list.dart';
 import 'home_screen_pages/filtering_items.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final Function(int) onPageChanged;
+
+  const HomeScreen({super.key, required this.onPageChanged});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -221,11 +225,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 //   ),
                 // ),
                 Image.asset(AppImages.refresh, height: 70, width: 150),
-                const CustomAppBar(),
+                 CustomAppBar(),
 
-                // FilteringItem(
-                //   selectedTerm: (String value) {},
-                // ),
+
                 Padding(
                   padding: const EdgeInsets.only(top: 1.0),
                   child: CafeList(),
@@ -233,6 +235,49 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+  Widget CustomAppBar(){
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(0.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.location_on_outlined,size: 25,),
+                SizedBox(
+                  width: 5,
+                ),
+                TextStyles.textHeadings(textValue: 'Ireland'),
+
+              ],
+            ),
+            Row(
+              children: [
+                SvgPicture.asset(
+                  AppIcons.notification,
+                  height: 25,
+                  width: 25,
+                ),SizedBox(
+                  width: 5,
+                ),
+                GestureDetector(
+                  onTap: (){
+                    widget.onPageChanged(1);
+                  },
+                  child: SvgPicture.asset(
+                    AppIcons.bag,
+                    height: 25,
+                    width: 25,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
