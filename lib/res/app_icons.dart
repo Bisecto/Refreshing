@@ -9,5 +9,6 @@ class AppIcons {
   static const tag = '${_iconBaseUrl}tag.svg';
   static const finger = '${_iconBaseUrl}hi.svg';
   static const notification = '${_iconBaseUrl}notification.svg';
+  static const save = '${_iconBaseUrl}save.svg';
 
 }

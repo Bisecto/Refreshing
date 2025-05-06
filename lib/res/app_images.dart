@@ -7,6 +7,7 @@ class AppImages {
   static const coupon = '${_imageBaseUrl}coupon.png';
   static const refresh = '${_imageBaseUrl}refresh.png';
   static const singleProduct = '${_imageBaseUrl}single_product.png';
+  static const discount = '${_imageBaseUrl}discount.png';
 
 
 }

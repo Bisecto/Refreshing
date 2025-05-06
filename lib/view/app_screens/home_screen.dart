@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:refreshing_co/res/app_images.dart';
 import 'package:refreshing_co/utills/app_utils.dart';
 import 'package:refreshing_co/view/widgets/app_custom_text.dart';
+import 'package:refreshing_co/view/widgets/form_button.dart';
 import 'package:refreshing_co/view/widgets/form_input.dart';
 
 import '../../res/app_colors.dart';
@@ -19,7 +20,84 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final searchController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder:
+            (context) => AlertDialog(
+              backgroundColor: Colors.white,
+              contentPadding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          height: 140,
+                          width: 300,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            // border: Border.all(color: AppColors.green),
+                            image: DecorationImage(
+                              image: AssetImage(AppImages.discount),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Icon(
+                                Icons.cancel_outlined,
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    TextStyles.textHeadings(
+                      textValue: "Get 10% off your first order",
+                      textColor: AppColors.black,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: CustomText(
+                        text:
+                            "Explore a variety of cafes near you, "
+                            "from trendy coffee bars to charming,"
+                            " quiet spaces. Your perfect coffee "
+                            "experience is just a tap away.",
+                        color: AppColors.black,
+                        size: 13,
+                        maxLines: 5,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    FormButton(onPressed: () {Navigator.pop(context);},bgColor: AppColors.appMainColor,text: "Explore",borderRadius: 15,),
+                  ],
+                ),
+              ),
+            ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,11 +223,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 Image.asset(AppImages.refresh, height: 70, width: 150),
                 const CustomAppBar(),
 
-
                 // FilteringItem(
                 //   selectedTerm: (String value) {},
                 // ),
-                Padding(padding: const EdgeInsets.only(top: 1.0), child: CafeList()),
+                Padding(
+                  padding: const EdgeInsets.only(top: 1.0),
+                  child: CafeList(),
+                ),
               ],
             ),
           ),
