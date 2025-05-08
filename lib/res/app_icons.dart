@@ -10,5 +10,8 @@ class AppIcons {
   static const finger = '${_iconBaseUrl}hi.svg';
   static const notification = '${_iconBaseUrl}notification.svg';
   static const save = '${_iconBaseUrl}save.svg';
+  static const menu = '${_iconBaseUrl}menu.svg';
+  static const order = '${_iconBaseUrl}order.svg';
+  static const reels = '${_iconBaseUrl}reels.svg';
 
 }

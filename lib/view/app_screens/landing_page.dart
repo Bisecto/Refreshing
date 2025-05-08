@@ -52,8 +52,9 @@ class _LandingPageState extends State<LandingPage> {
     landPageScreens = [
       HomeScreen(onPageChanged: _onPageChanged),
       const CartScreen(),
+      Container(),
       const RewardScreen(),
-      AccountScreen(),
+     // AccountScreen(),
       SettingsScreen(),
     ];
     super.initState();
@@ -126,7 +127,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  AppIcons.bag,
+                  AppIcons.order,
                   color:
                       _currentIndex == 1
                           ? AppColors.appMainColor
@@ -136,7 +137,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  AppIcons.goft,
+                  AppIcons.reels,
                   color:
                       _currentIndex == 2
                           ? AppColors.appMainColor
@@ -146,7 +147,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  AppIcons.user,
+                  AppIcons.goft,
                   color:
                       _currentIndex == 3
                           ? AppColors.appMainColor
@@ -156,7 +157,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  AppIcons.settings,
+                  AppIcons.menu,
                   color:
                       _currentIndex == 4
                           ? AppColors.appMainColor
