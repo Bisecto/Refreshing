@@ -42,7 +42,7 @@ class _SingleCafeProductState extends State<SingleCafeProduct> {
                   children: [
                     SafeArea(
                       child: Padding(
-                        padding: const EdgeInsets.all(15.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -251,14 +251,14 @@ class _SingleCafeProductState extends State<SingleCafeProduct> {
   }
   Widget MenuContainer(String name, String desc) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(1.0, 0, 10, 10),
+      padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 10),
       child: Container(
         height: 150,
         decoration: BoxDecoration(
             color: AppColors.grey.withOpacity(0.5),
             borderRadius: BorderRadius.circular(15)),
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(5.0),
           child: Row(
             //mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -280,6 +280,8 @@ class _SingleCafeProductState extends State<SingleCafeProduct> {
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+
                 children: [
                   TextStyles.textHeadings(textValue: name),
                   SizedBox(

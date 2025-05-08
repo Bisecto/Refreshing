@@ -19,20 +19,20 @@ class _CartAppBarState extends State<CartAppBar> {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(0.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              backgroundColor: AppColors.lightPurple,
-              child: TextStyles.textHeadings(textValue: 'P'),
-            ),
+            // TextStyles.textHeadings(textValue: 'My Cart',textSize: 20),  CircleAvatar(
+            //   backgroundColor: AppColors.lightPurple,
+            //   child: TextStyles.textHeadings(textValue: 'P'),
+            // ),
             Image.asset( AppImages.refresh,height: 70,width: AppUtils.deviceScreenSize(context).width/3,),
-            SvgPicture.asset(
-              AppIcons.notification,
-              height: 20,
-              width: 20,
-            ),
+            // SvgPicture.asset(
+            //   AppIcons.notification,
+            //   height: 20,
+            //   width: 20,
+            // ),
           ],
         ),
       ),

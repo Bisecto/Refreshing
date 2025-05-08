@@ -18,23 +18,31 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: SingleChildScrollView(
-              physics: const ScrollPhysics(),
-              child: Column(
-                children: [
-                  const CartAppBar(),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            physics: const ScrollPhysics(),
+            child: Column(
+              children: [
+                const CartAppBar(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: AppColors.lightPurple,
+                      child: TextStyles.textHeadings(textValue: 'P'),
+                    ),
+                    TextStyles.textHeadings(textValue: 'My Cart', textSize: 20),
+                    SizedBox(),
+                  ],
+                ),
 
-                  Align(
-                    alignment: Alignment.center,
-                    child: TextStyles.textHeadings(textValue: 'Cart',textSize: 20),
-                  ),
-                  CartTabController()
-                ],
-              ),
+                CartTabController(),
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

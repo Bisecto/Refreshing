@@ -248,7 +248,7 @@ class _SingleCafeState extends State<SingleCafe> {
 
   Widget MenuContainer(String name, String desc) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(1.0, 0, 10, 10),
+      padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 10),
       child: GestureDetector(
         onTap: (){
           AppNavigator.pushAndStackPage(context, page: const SingleCafeProduct());
@@ -259,7 +259,7 @@ class _SingleCafeState extends State<SingleCafe> {
               color: AppColors.grey.withOpacity(0.5),
               borderRadius: BorderRadius.circular(15)),
           child: Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(5.0),
             child: Row(
               //mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -277,18 +277,19 @@ class _SingleCafeState extends State<SingleCafe> {
                           fit: BoxFit.fill)),
                 ),
                 const SizedBox(
-                  width: 10,
+                  width: 5,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextStyles.textHeadings(textValue: name),
+                    TextStyles.textHeadings(textValue: name,textSize: 15),
                     SizedBox(
                       width: AppUtils.deviceScreenSize(context).width / 2,
                       child: TextStyles.textDetails(
                           textValue: desc,
                           textColor: AppColors.textColor,
-                          textSize: 16),
+                          textSize: 13),
                     ),
                     const SizedBox(
                       width: 0,

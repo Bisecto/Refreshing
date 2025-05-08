@@ -23,7 +23,7 @@ class _CartTabControllerState extends State<CartTabController> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(10.0),
       child: SingleChildScrollView(
         child: Container(
           height: AppUtils.deviceScreenSize(context).height,
@@ -46,12 +46,12 @@ class _CartTabControllerState extends State<CartTabController> {
             height: 50,
             width: AppUtils.deviceScreenSize(context).width,
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.appMainColor),
+              border: Border.all(color: AppColors.black),
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: TabBar(
               indicator: BoxDecoration(
-                color: AppColors.appMainColor,
+                color: AppColors.black,
                 borderRadius: BorderRadius.circular(16.0),
               ),
               indicatorSize: TabBarIndicatorSize.tab,
