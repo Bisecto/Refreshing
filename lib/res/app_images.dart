@@ -8,6 +8,8 @@ class AppImages {
   static const refresh = '${_imageBaseUrl}refresh.png';
   static const singleProduct = '${_imageBaseUrl}single_product.png';
   static const discount = '${_imageBaseUrl}discount.png';
+  static const coffe = '${_imageBaseUrl}Coffe.png';
+
 
 
 }

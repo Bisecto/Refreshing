@@ -4,6 +4,7 @@ import 'package:refreshing_co/res/app_colors.dart';
 import 'package:refreshing_co/view/widgets/form_button.dart';
 
 import '../../../../res/app_icons.dart';
+import '../../../../res/app_images.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/form_input.dart';
@@ -72,8 +73,8 @@ class _RunningOrdersState extends State<RunningOrders> {
                   children: [
                     CircleAvatar(
                       backgroundColor: AppColors.appMainColor,
-                      child: SvgPicture.asset(
-                        AppIcons.goft,
+                      child: Image.asset(
+                        AppImages.coffe,
                         color: AppColors.white,
                       ),
                     ),
