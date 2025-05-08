@@ -6,7 +6,9 @@ import '../widgets/app_custom_text.dart';
 import 'cart_app_bar/cart_tab_controller.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  final Function(int) onPageChanged;
+
+  const CartScreen({super.key, required this.onPageChanged});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -37,7 +39,7 @@ class _CartScreenState extends State<CartScreen> {
                   ],
                 ),
 
-                CartTabController(),
+                CartTabController(onPageChanged:  widget.onPageChanged,),
               ],
             ),
           ),

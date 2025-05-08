@@ -51,7 +51,7 @@ class _LandingPageState extends State<LandingPage> {
 
     landPageScreens = [
       HomeScreen(onPageChanged: _onPageChanged),
-      const CartScreen(),
+       CartScreen(onPageChanged:  _onPageChanged,),
       Container(),
       const RewardScreen(),
      // AccountScreen(),

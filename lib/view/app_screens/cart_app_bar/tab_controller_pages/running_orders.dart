@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:refreshing_co/res/app_colors.dart';
 import 'package:refreshing_co/view/widgets/form_button.dart';
 
+import '../../../../res/app_icons.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/form_input.dart';
@@ -49,9 +51,59 @@ class _RunningOrdersState extends State<RunningOrders> {
       ),
     );
   }
-  Widget orderContainer(String name, String desc, int index) {
+  Widget runningOrderContainer(String orderNo) {
     return Container(
-
+      height: 140,
+      decoration: BoxDecoration(
+        color: AppColors.grey.withOpacity(0.2),
+        border: Border.all(width: 1.5, color: AppColors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: AppColors.appMainColor,
+                      child: SvgPicture.asset(
+                        AppIcons.goft,
+                        color: AppColors.white,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextStyles.textHeadings(
+                          textValue: orderNo,
+                          textSize: 16,
+                        ),
+                        CustomText(text: "1 items £2.30"),
+                      ],
+                    ),
+                  ],
+                ),
+                Icon(Icons.remove_circle, color: AppColors.black),
+              ],
+            ),
+            FormButton(
+              onPressed: () {},
+              text: "View details",
+              bgColor: AppColors.appMainColor,
+              height: 45,
+              borderRadius: 10,
+            ),
+          ],
+        ),
+      ),
     );
   }
+
 }

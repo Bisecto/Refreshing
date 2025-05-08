@@ -13,7 +13,9 @@ import '../../../utills/app_utils.dart';
 import '../../widgets/app_custom_text.dart';
 
 class CartTabController extends StatefulWidget {
-  const CartTabController({super.key});
+  final Function(int) onPageChanged;
+
+  const CartTabController({super.key, required this.onPageChanged});
 
   @override
   State<CartTabController> createState() => _CartTabControllerState();
@@ -78,8 +80,8 @@ class _CartTabControllerState extends State<CartTabController> {
           SizedBox(
             height: AppUtils.deviceScreenSize(context).height-70, // Set an appropriate height
             width: AppUtils.deviceScreenSize(context).width,
-            child: const TabBarView(
-              children: [AvailableOrder(), RunningOrders()],
+            child:  TabBarView(
+              children: [AvailableOrder(onPageChanged:widget.onPageChanged,), RunningOrders()],
             ),
           ),
         ],

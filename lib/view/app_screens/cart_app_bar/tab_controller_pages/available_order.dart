@@ -9,7 +9,9 @@ import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/form_input.dart';
 
 class AvailableOrder extends StatefulWidget {
-  const AvailableOrder({super.key});
+  final Function(int) onPageChanged;
+
+  const AvailableOrder({super.key, required this.onPageChanged});
 
   @override
   State<AvailableOrder> createState() => _AvailableOrderState();
@@ -28,7 +30,10 @@ class _AvailableOrderState extends State<AvailableOrder> {
         children: [
           availableOrderContainer("Order #230"),
           FormButton(
-            onPressed: () {},
+            onPressed: () {
+              widget.onPageChanged(0);
+            },
+
             text: "Explore menu",
             bgColor: AppColors.grey,
             textColor: AppColors.black,
