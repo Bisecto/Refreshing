@@ -161,7 +161,6 @@ class _AvailableOrderState extends State<AvailableOrder> {
                       backgroundColor: AppColors.appMainColor,
                       child: Image.asset(
                         AppImages.coffe,
-                        color: AppColors.white,
                       ),
                     ),
                     SizedBox(width: 10),

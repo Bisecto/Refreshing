@@ -13,5 +13,6 @@ class AppIcons {
   static const menu = '${_iconBaseUrl}menu.svg';
   static const order = '${_iconBaseUrl}order.svg';
   static const reels = '${_iconBaseUrl}reels.svg';
+  static const bell = '${_iconBaseUrl}bell.svg';
 
 }

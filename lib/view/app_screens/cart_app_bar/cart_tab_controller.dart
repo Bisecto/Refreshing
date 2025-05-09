@@ -64,12 +64,24 @@ class _CartTabControllerState extends State<CartTabController> {
               dividerColor: Colors.transparent,
               tabs: [
                 Tab(
-                  text: 'Available in cart',
-                  //icon: SvgPicture.asset(AppIcons.goft),
+                  //text: 'Available in cart',
+
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(AppIcons.goft,height: 20,width: 20,color: Colors.grey,),
+                      TextStyles.textHeadings(textValue:  " Available in cart",textSize: 14)
+                    ],
+                  ),
                 ),
-                const Tab(
-                  text: 'Running Orders',
-                  //icon: Icon(Icons.my_library_books_rounded),
+                 Tab(
+                   // text: 'Running Orders',
+                   // icon: Icon(Icons.my_library_books_rounded,size: 20,),
+                  child: Row(
+                    children: [
+                      Icon(Icons.my_library_books_rounded,size: 20,),
+                      TextStyles.textHeadings(textValue: "Running Orders",textSize: 14)
+                    ],
+                  ),
                 ),
               ],
             ),

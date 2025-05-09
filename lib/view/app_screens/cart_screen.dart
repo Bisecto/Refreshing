@@ -34,7 +34,7 @@ class _CartScreenState extends State<CartScreen> {
                       backgroundColor: AppColors.lightPurple,
                       child: TextStyles.textHeadings(textValue: 'P'),
                     ),
-                    TextStyles.textHeadings(textValue: 'My Cart', textSize: 20),
+                    TextStyles.textHeadings(textValue: 'My Running Orders', textSize: 20),
                     SizedBox(),
                   ],
                 ),
