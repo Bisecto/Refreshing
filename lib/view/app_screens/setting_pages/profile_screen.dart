@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:refreshing_co/res/app_colors.dart';
+import 'package:refreshing_co/utills/app_utils.dart';
 import 'package:refreshing_co/view/widgets/app_custom_text.dart';
 import 'package:refreshing_co/view/widgets/form_button.dart';
+
+import '../../../bloc/auth_bloc/auth_bloc.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -36,70 +40,108 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SizedBox(height: 20),
             // Profile Avatar with Edit Icon
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.purple.shade100,
-                  child: Text(
-                    'P',
-                    style: TextStyle(fontSize: 40, color: Colors.black),
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                String userName='' ;
+                String userEmail ='';
+                String userPhone ='';
+                String firstname='' ;
+                String lastname ='';
+               // String profileImage='' ;
+
+                if (state is AuthAuthenticated) {
+                  userName = state.user.username ??'User';
+                  userEmail = state.user.email ?? 'user@example.com';
+                  userPhone = state.user.phoneNumber ?? '';
+                  firstname = state.user.firstName??'' ;
+                  lastname = state.user.lastName??"";
+                  // profileImage =
+                  //     state.user.profileImage ??   'User';
+                }
+
+                return Container(
+                  height: 500,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.purple.shade100,
+                            child: Text(
+                              userName.substring(0,1),
+                              style: TextStyle(fontSize: 40, color: Colors.black),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            top: 65,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.transparent,
+                              ),
+                              child: IconButton(
+                                color: Colors.transparent,
+                                icon: Icon(Icons.camera_alt, color: Colors.black),
+                                onPressed: () {
+                                  // Handle avatar image update
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      // Profile Name
+                      Text(
+                        '$lastname $firstname',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '@ $userName',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      // Personal Information Title
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Personal Information',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      // Email Row
+                      buildInfoRow('Email', userEmail),
+                      SizedBox(height: 20),
+                      // Phone Number Row
+                      buildInfoRow('Phone Number', userPhone),
+                      SizedBox(height: 20),
+                      // Date Joined Row
+                      // buildInfoRow('Date Joined', dateJoined),
+                      Spacer(),
+                      // Update Button
+                      FormButton(onPressed: (){},text: 'Update',bgColor: AppColors.appMainColor,),
+                      SizedBox(height: 20),
+                    ],
                   ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  top: 65,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.transparent,
-                    ),
-                    child: IconButton(
-                      color: Colors.transparent,
-                      icon: Icon(Icons.camera_alt, color: Colors.black),
-                      onPressed: () {
-                        // Handle avatar image update
-                      },
-                    ),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-            SizedBox(height: 10),
-            // Profile Name
-            Text(
-              'Okafor Precious',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 30),
-            // Personal Information Title
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Personal Information',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            // Email Row
-            buildInfoRow('Email', 'Cprecious038@gmail.com'),
-            SizedBox(height: 20),
-            // Phone Number Row
-            buildInfoRow('Phone Number', '+234 812 345 7146'),
-            SizedBox(height: 20),
-            // Date Joined Row
-            buildInfoRow('Date Joined', '24 October 2024'),
-            Spacer(),
-            // Update Button
-            FormButton(onPressed: (){},text: 'Update',bgColor: AppColors.appMainColor,),
-            SizedBox(height: 20),
+
+           
           ],
         ),
       ),
