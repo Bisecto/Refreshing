@@ -22,8 +22,10 @@ class AuthOTPVerificationSuccess extends AuthState {
 class AuthSignInSuccess extends AuthState {
   final String token;
   final User user;
+  final Position position;
+  final Placemark placemark;
 
-  AuthSignInSuccess({required this.token, required this.user});
+  AuthSignInSuccess({required this.token, required this.user,required this.position, required this.placemark,});
 }
 
 class AuthError extends AuthState {
@@ -37,6 +39,8 @@ class AuthSignedOut extends AuthState {}
 class AuthAuthenticated extends AuthState {
   final String token;
   final User user;
+  final Position position;
+  final Placemark placemark;
 
-  AuthAuthenticated({required this.token, required this.user});
+  AuthAuthenticated( {required this.token, required this.user, required this.position, required this.placemark,});
 }

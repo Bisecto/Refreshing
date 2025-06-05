@@ -61,6 +61,7 @@ dependencies:
   async:
   social_login_buttons: ^1.0.7
   geolocator:
+  geocoding:
 
 dev_dependencies:
   flutter_test:

@@ -7,6 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/src/foundation/key.dart' as kk;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
 import 'package:refreshing_co/utills/shared_preferences.dart';
@@ -27,6 +29,63 @@ class AppUtils {
       print(object.toString());
       // debugPrint(object.toString());
     }
+  }
+
+
+  Future<Placemark> getAddressFromLatLng(Position position) async {
+    try {
+
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        // String address =
+        //     '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.postalCode}, ${place.country}';
+        return place;
+      } else {
+        return Placemark();
+        print('No address found');
+      }
+    } catch (e) {
+      return Placemark();
+
+    //  print('Error: $e');
+    }
+  }
+
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled
+      return Future.error('Location services are disabled.');
+    }
+
+    // Check location permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied.');
+    }
+
+
+    // Get the current position
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
   }
 
   openApp(context) async {

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
 import 'package:refreshing_co/model/user_data.dart';
 import 'package:refreshing_co/model/user_model.dart';
@@ -144,8 +146,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (result.statusCode == 200 || result.statusCode == 201) {
         UserData userData = UserData.fromJson(json.decode(result.body));
         await _saveAuthData(userData.accessToken!, userData.toJson());
+        Position position = await AppUtils().determinePosition();
+        print(position);
+        Placemark placemark = await AppUtils().getAddressFromLatLng(position);
         emit(
-          AuthSignInSuccess(token: userData.accessToken!, user: userData.user!),
+          AuthSignInSuccess(
+            token: userData.accessToken!,
+            user: userData.user!,
+            position: position,
+            placemark: placemark,
+          ),
         );
       } else {
         ErrorModel errorModel = ErrorModel.fromJson(json.decode(result.body));
@@ -185,7 +195,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print(userString);
       if (token.isNotEmpty && userString.isNotEmpty) {
         User user = User.fromJson(json.decode(userString)['user']);
-        emit(AuthAuthenticated(token: token, user: user));
+        Position position = await AppUtils().determinePosition();
+        print(position);
+        Placemark placemark = await AppUtils().getAddressFromLatLng(position);
+        emit(
+          AuthAuthenticated(
+            position: position,
+            token: token,
+            user: user,
+            placemark: placemark,
+          ),
+        );
         print(user.email);
       } else {
         emit(AuthInitial());
