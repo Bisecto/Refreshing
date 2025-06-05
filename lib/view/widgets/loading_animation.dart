@@ -29,7 +29,7 @@ class LoadingDialog extends StatelessWidget {
                 height: 70,
                 child: Center(
                     child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: AppColors.darkGreen,
+                      color: AppColors.black,
                       size: 100,
                     )),
               ),
