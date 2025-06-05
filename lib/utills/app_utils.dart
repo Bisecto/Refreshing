@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/src/foundation/key.dart' as kk;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import 'package:refreshing_co/utills/shared_preferences.dart';
 
@@ -15,7 +16,6 @@ import '../res/sharedpref_key.dart';
 import '../view/auth/sign_in_screen.dart';
 import '../view/important_pages/dialog_box.dart';
 import 'app_navigator.dart';
-
 
 class AppUtils {
   static Color hexToColor(String code) {
@@ -29,21 +29,16 @@ class AppUtils {
     }
   }
 
-
-
   openApp(context) async {
     bool isFirstOpen =
         (await SharedPref.getBool(SharedPrefKey.isFirstOpenKey)) ?? true;
     String userData = await SharedPref.getString(SharedPrefKey.userDataKey);
-    String password = await SharedPref.getString(SharedPrefKey.passwordKey);
-    String firstame = await SharedPref.getString(SharedPrefKey.firstNameKey);
     print(userData);
-    print(password);
     print(8);
 
     if (!isFirstOpen) {
       print(1);
-      if (userData.isNotEmpty && password.isNotEmpty) {
+      if (userData.isNotEmpty ) {
         print(3);
 
         // Future.delayed(const Duration(seconds: 3), () {
@@ -54,8 +49,10 @@ class AppUtils {
         print(4);
 
         Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndRemovePreviousPages(context,
-              page: const SignInScreen());
+          AppNavigator.pushAndRemovePreviousPages(
+            context,
+            page: const SignInScreen(),
+          );
         });
       }
     } else {
@@ -63,32 +60,22 @@ class AppUtils {
 
       await SharedPref.putBool(SharedPrefKey.isFirstOpenKey, false);
       Future.delayed(const Duration(seconds: 3), () {
-        AppNavigator.pushAndRemovePreviousPages(context,
-            page: const SignInScreen());
+        AppNavigator.pushAndRemovePreviousPages(
+          context,
+          page: const SignInScreen(),
+        );
       });
     }
   }
 
-  logout(context) async {
-    SharedPref.remove(SharedPrefKey.passwordKey);
-    SharedPref.remove(SharedPrefKey.emailKey);
-    SharedPref.remove(SharedPrefKey.phoneKey);
-    SharedPref.remove("accessPin");
-    SharedPref.remove(SharedPrefKey.userIdKey);
-    SharedPref.remove(SharedPrefKey.firstNameKey);
-    SharedPref.remove(SharedPrefKey.lastNameKey);
+  logout() async {
+    SharedPref.remove(SharedPrefKey.userDataKey);
+
     SharedPref.remove(SharedPrefKey.userDataKey);
     SharedPref.remove(SharedPrefKey.refreshTokenKey);
-    SharedPref.remove(SharedPrefKey.accessTokenKey);
-    SharedPref.remove(SharedPrefKey.temUserDataKey);
-    SharedPref.remove(SharedPrefKey.temPasswordKey);
-    SharedPref.remove("temUserPhone");
     SharedPref.remove(SharedPrefKey.hashedAccessPinKey);
     SharedPref.remove(SharedPrefKey.biometricKey);
-    SharedPref.remove("temUserPhone");
-    SharedPref.remove("accessPin");
   }
-
 
   ///Future<String?>
   static getId() async {
@@ -116,19 +103,21 @@ class AppUtils {
     return queryData.size;
   }
 
-
   static DateTime timeToDateTime(TimeOfDay time, [DateTime? date]) {
     final newDate = date ?? DateTime.now();
     return DateTime(
-        newDate.year, newDate.month, newDate.day, time.hour, time.minute);
+      newDate.year,
+      newDate.month,
+      newDate.day,
+      time.hour,
+      time.minute,
+    );
   }
 
   static String formatString({required String data}) {
     if (data.isEmpty) return data;
-
     String firstLetter = data[0].toUpperCase();
     String remainingString = data.substring(1);
-
     return firstLetter + remainingString;
   }
 
@@ -151,14 +140,13 @@ class AppUtils {
     }
   }
 
-  // static String formateSimpleDate({String? dateTime}) {
-  //   var inputDate = DateTime.parse(dateTime!);
-  //
-  //   var outputFormat = DateFormat('yyyy MMM d, hh:mm a');
-  //   var outputDate = outputFormat.format(inputDate);
-  //
-  //   return outputDate;
-  // }
+  static String formateSimpleDate({String? dateTime}) {
+    var inputDate = DateTime.parse(dateTime!);
+    var outputFormat = DateFormat('yyyy MMM d, hh:mm a');
+    var outputDate = outputFormat.format(inputDate);
+
+    return outputDate;
+  }
 
   // static bool isPhoneNumber(String s) {
   //   if (s.length > 16 || s.length < 11) return false;

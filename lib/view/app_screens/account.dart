@@ -29,7 +29,6 @@ class AccountScreen extends StatelessWidget {
             _buildWalletAndSubscriptionSection(),
 
             const SizedBox(height: 20), // Add some spacing between sections
-
             // Order history section
             Expanded(child: _buildOrderHistory()),
           ],
