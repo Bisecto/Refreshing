@@ -146,9 +146,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (result.statusCode == 200 || result.statusCode == 201) {
         UserData userData = UserData.fromJson(json.decode(result.body));
         await _saveAuthData(userData.accessToken!, userData.toJson());
-        Position position = await AppUtils().determinePosition();
+        Position? position = await AppUtils().determinePosition();
         print(position);
-        Placemark placemark = await AppUtils().getAddressFromLatLng(position);
+        Placemark placemark = await AppUtils().getAddressFromLatLng(position!);
         emit(
           AuthSignInSuccess(
             token: userData.accessToken!,
@@ -161,13 +161,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ErrorModel errorModel = ErrorModel.fromJson(json.decode(result.body));
         emit(AuthError(message: errorModel.message ?? 'Invalid credentials'));
       }
-      // if (result['success'] == true) {
-      //   await _saveAuthData(result['token'], result['user']);
-      //
-      //   emit(AuthSignInSuccess(token: result['token'], user: result['user']));
-      // } else {
-      //   emit(AuthError(message: result['message'] ?? 'Invalid credentials'));
-      // }
+
     } catch (e) {
       emit(AuthError(message: 'Network error. Please try again.'));
     }
@@ -195,9 +189,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print(userString);
       if (token.isNotEmpty && userString.isNotEmpty) {
         User user = User.fromJson(json.decode(userString)['user']);
-        Position position = await AppUtils().determinePosition();
+        Position? position = await AppUtils().determinePosition();
         print(position);
-        Placemark placemark = await AppUtils().getAddressFromLatLng(position);
+        Placemark placemark = await AppUtils().getAddressFromLatLng(position!);
         emit(
           AuthAuthenticated(
             position: position,

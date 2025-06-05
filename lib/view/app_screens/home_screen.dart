@@ -1,13 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:refreshing_co/res/app_images.dart';
 import 'package:refreshing_co/utills/app_utils.dart';
 import 'package:refreshing_co/view/widgets/app_custom_text.dart';
 import 'package:refreshing_co/view/widgets/form_button.dart';
 import 'package:refreshing_co/view/widgets/form_input.dart';
 
+import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_icons.dart';
 import 'home_screen_pages/app_bar.dart';
@@ -116,7 +119,32 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
 
                 Image.asset(AppImages.refresh, height: 70, width: 150),
-                 CustomAppBar(),
+                BlocBuilder<AuthBloc, AuthState>(
+
+                  builder: (context, state) {
+                    String userName='' ;
+                    String userEmail ='';
+                    String userPhone ='';
+                    String firstname='' ;
+                    String lastname ='';
+                    // String profileImage='' ;
+                    Placemark? placemark;
+
+                    if (state is AuthAuthenticated) {
+                      userName = state.user.username ??'User';
+                      userEmail = state.user.email ?? 'user@example.com';
+                      userPhone = state.user.phoneNumber ?? '';
+                      firstname = state.user.firstName??'' ;
+                      lastname = state.user.lastName??"";
+                      placemark = state.placemark;
+                      // profileImage =
+                      //     state.user.profileImage ??   'User';
+                    }
+
+                    return CustomAppBar(placemark!);
+                  },
+                ),
+
 
 
                 Padding(
@@ -130,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  Widget CustomAppBar(){
+  Widget CustomAppBar(Placemark placemark){
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(0.0),
@@ -143,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   width: 5,
                 ),
-                TextStyles.textHeadings(textValue: 'Ireland'),
+                TextStyles.textHeadings(textValue: placemark.locality!),
 
               ],
             ),

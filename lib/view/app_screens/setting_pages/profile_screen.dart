@@ -41,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(height: 20),
             // Profile Avatar with Edit Icon
             BlocBuilder<AuthBloc, AuthState>(
+
               builder: (context, state) {
                 String userName='' ;
                 String userEmail ='';

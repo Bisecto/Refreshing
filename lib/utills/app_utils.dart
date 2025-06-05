@@ -57,7 +57,7 @@ class AppUtils {
     }
   }
 
-  Future<Position> determinePosition() async {
+  Future<Position?> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -84,48 +84,49 @@ class AppUtils {
 
 
     // Get the current position
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getLastKnownPosition(
+        //desiredAccuracy: LocationAccuracy.high
+    );
   }
 
-  openApp(context) async {
-    bool isFirstOpen =
-        (await SharedPref.getBool(SharedPrefKey.isFirstOpenKey)) ?? true;
-    String userData = await SharedPref.getString(SharedPrefKey.userDataKey);
-    print(userData);
-    print(8);
-
-    if (!isFirstOpen) {
-      print(1);
-      if (userData.isNotEmpty ) {
-        print(3);
-
-        // Future.delayed(const Duration(seconds: 3), () {
-        //   AppNavigator.pushAndRemovePreviousPages(context,
-        //       page: SignInWIthAccessPinBiometrics(userName: firstame));
-        // });
-      } else {
-        print(4);
-
-        Future.delayed(const Duration(seconds: 3), () {
-          AppNavigator.pushAndRemovePreviousPages(
-            context,
-            page: const SignInScreen(),
-          );
-        });
-      }
-    } else {
-      print(15);
-
-      await SharedPref.putBool(SharedPrefKey.isFirstOpenKey, false);
-      Future.delayed(const Duration(seconds: 3), () {
-        AppNavigator.pushAndRemovePreviousPages(
-          context,
-          page: const SignInScreen(),
-        );
-      });
-    }
-  }
+  // openApp(context) async {
+  //   bool isFirstOpen =
+  //       (await SharedPref.getBool(SharedPrefKey.isFirstOpenKey)) ?? true;
+  //   String userData = await SharedPref.getString(SharedPrefKey.userDataKey);
+  //   print(userData);
+  //   print(8);
+  //
+  //   if (!isFirstOpen) {
+  //     print(1);
+  //     if (userData.isNotEmpty ) {
+  //       print(3);
+  //
+  //       // Future.delayed(const Duration(seconds: 3), () {
+  //       //   AppNavigator.pushAndRemovePreviousPages(context,
+  //       //       page: SignInWIthAccessPinBiometrics(userName: firstame));
+  //       // });
+  //     } else {
+  //       print(4);
+  //
+  //       Future.delayed(const Duration(seconds: 3), () {
+  //         AppNavigator.pushAndRemovePreviousPages(
+  //           context,
+  //           page: const SignInScreen(),
+  //         );
+  //       });
+  //     }
+  //   } else {
+  //     print(15);
+  //
+  //     await SharedPref.putBool(SharedPrefKey.isFirstOpenKey, false);
+  //     Future.delayed(const Duration(seconds: 3), () {
+  //       AppNavigator.pushAndRemovePreviousPages(
+  //         context,
+  //         page: const SignInScreen(),
+  //       );
+  //     });
+  //   }
+  // }
 
   logout() async {
     SharedPref.remove(SharedPrefKey.userDataKey);
