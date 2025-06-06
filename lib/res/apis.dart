@@ -3,6 +3,7 @@ class AppApis {
 
   ///Authentication Endpoints
   static String signUpApi = "$appBaseUrl/api/v1/auth/register";
+
   static String verifyResetPasswordCode = "$appBaseUrl/api/v1/auth/verify-reset-code";
   static String resetPassword = "$appBaseUrl/api/v1/auth/reset-password";
   static String changePassword = "$appBaseUrl/api/v1/auth/change-password";
