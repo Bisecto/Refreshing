@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:refreshing_co/repository/cafe_repository.dart';
+import 'package:refreshing_co/repository/product_service.dart';
 import 'package:refreshing_co/res/app_router.dart';
 import 'package:refreshing_co/view/app_screens/landing_page.dart';
 import 'package:refreshing_co/view/auth/sign_in_screen.dart';
@@ -9,6 +10,7 @@ import 'package:refreshing_co/view/splash_screen.dart';
 
 import 'bloc/auth_bloc/auth_bloc.dart';
 import 'bloc/cafe_bloc/cafe_bloc.dart';
+import 'bloc/product_bloc/product_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +40,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => CafeBloc(cafeService: CafeService()),
+        ),
+        BlocProvider(
+          create: (context) => ProductBloc(productService: ProductService()),
         ),
       ],
       child: MaterialApp(
