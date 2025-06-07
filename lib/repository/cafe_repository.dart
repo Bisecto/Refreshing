@@ -9,7 +9,7 @@ class CafeService {
   static const String baseUrl = 'https://api.refreshandco.com/api/v1';
 
   Future<Map<dynamic, dynamic>> searchCafes(CafeSearchRequest request,String token) async {
-    //try {
+    try {
       print(request.toJson());
       final uri = Uri.parse('$baseUrl/search/all').replace(
         queryParameters: request.toJson().map((key, value) => MapEntry(key, value.toString())),
@@ -42,14 +42,14 @@ class CafeService {
           'message': responseData['message'] ?? 'Failed to fetch cafes',
         };
       }
-    // } catch (e) {
-    //   print(e);
-    //
-    //   return {
-    //     'success': false,
-    //     'message': 'Network error occurred',
-    //   };
-    // }
+    } catch (e) {
+      print(e);
+
+      return {
+        'success': false,
+        'message': 'Network error occurred',
+      };
+    }
   }
 
   Future<Map<String, dynamic>> getFilterOptions(String token) async {
@@ -88,6 +88,7 @@ class CafeService {
 
   Future<Map<String, dynamic>> toggleFavorite(String cafeId,String token) async {
     try {
+      print('$baseUrl/cafes/$cafeId/favorites');
       final response = await http.post(
         Uri.parse('$baseUrl/cafes/$cafeId/favorites'),
         headers: {

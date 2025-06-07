@@ -180,10 +180,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     final totalAmount = _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
 
-    emit(CartUpdated(
-      cartItems: List.from(_cartItems),
-      totalAmount: totalAmount,
-    ));
+    // emit(CartUpdated(
+    //   cartItems: List.from(_cartItems),
+    //   totalAmount: totalAmount,
+    // ));
   }
 
   Future<void> _onUpdateCartItemQuantity(

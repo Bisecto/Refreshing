@@ -7,8 +7,9 @@ import '../../res/app_colors.dart';
 
 class LoadingDialog extends StatelessWidget {
   final String title;
+  final Color color;
 
-  const LoadingDialog(this.title, {Key? key}) : super(key: key);
+  const LoadingDialog(this.title, {Key? key,this.color=AppColors.black}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class LoadingDialog extends StatelessWidget {
                 height: 70,
                 child: Center(
                     child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: AppColors.black,
+                      color: color,
                       size: 100,
                     )),
               ),

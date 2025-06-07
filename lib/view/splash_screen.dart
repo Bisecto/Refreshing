@@ -9,6 +9,7 @@ import '../res/app_colors.dart';
 import '../res/app_images.dart';
 import '../utills/app_utils.dart';
 import 'auth/sign_in_screen.dart';
+import 'important_pages/dialog_box.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -52,11 +53,12 @@ class _SplashScreenState extends State<SplashScreen> {
         body: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthAuthenticated) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (_) => LandingPage(selectedIndex: 0),
-                ),
-              );
+              MSG.snackBar(context, "Signed in");
+              // Navigator.of(context).pushReplacement(
+              //   MaterialPageRoute(
+              //     builder: (_) => LandingPage(selectedIndex: 0),
+              //   ),
+              // );
             } else if (state is AuthInitial) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const SignInScreen()),

@@ -4,7 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:refreshing_co/res/app_icons.dart';
 import 'package:refreshing_co/utills/app_navigator.dart';
 import 'package:refreshing_co/view/app_screens/single_cafe/single_cafe_product/single_cafe_product.dart';
+import 'package:refreshing_co/view/important_pages/dialog_box.dart';
 import 'package:refreshing_co/view/widgets/app_custom_text.dart';
+import 'package:refreshing_co/view/widgets/form_button.dart';
 
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../bloc/product_bloc/product_event.dart';
@@ -14,7 +16,7 @@ import '../../../model/product/product_model.dart';
 import '../../../res/app_colors.dart';
 import '../../../res/app_images.dart';
 import '../../../utills/app_utils.dart';
-
+import '../../widgets/loading_animation.dart';
 
 class SingleCafe extends StatefulWidget {
   final String cafeId;
@@ -27,7 +29,8 @@ class SingleCafe extends StatefulWidget {
 
 class _SingleCafeState extends State<SingleCafe> {
   final ScrollController _scrollController = ScrollController();
-  final Map<String, int> _productCounters = {};
+
+  // final Map<String, int> _productCounters = {};
 
   @override
   void initState() {
@@ -56,47 +59,42 @@ class _SingleCafeState extends State<SingleCafe> {
     super.dispose();
   }
 
-  void _incrementCounter(String productId) {
-    setState(() {
-      _productCounters[productId] = (_productCounters[productId] ?? 0) + 1;
-    });
-  }
-
-  void _decrementCounter(String productId) {
-    setState(() {
-      final currentCount = _productCounters[productId] ?? 0;
-      if (currentCount > 0) {
-        _productCounters[productId] = currentCount - 1;
-      }
-    });
-  }
-
-  int _getCounter(String productId) {
-    return _productCounters[productId] ?? 0;
-  }
+  // void _incrementCounter(String productId) {
+  //   setState(() {
+  //     _productCounters[productId] = (_productCounters[productId] ?? 0) + 1;
+  //   });
+  // }
+  //
+  // void _decrementCounter(String productId) {
+  //   setState(() {
+  //     final currentCount = _productCounters[productId] ?? 0;
+  //     if (currentCount > 0) {
+  //       _productCounters[productId] = currentCount - 1;
+  //     }
+  //   });
+  // }
+  //
+  // int _getCounter(String productId) {
+  //   return _productCounters[productId] ?? 0;
+  // }
 
   void _addToCart(ProductModel product) {
-    final quantity = _getCounter(product.id);
-    if (quantity > 0) {
-      context.read<ProductBloc>().add(AddToCart(
+    //final quantity = _getCounter(product.id);
+    //if (quantity > 0) {
+    context.read<ProductBloc>().add(
+      AddToCart(
         product: product,
-        quantity: quantity,
+        quantity: 1,
         customizations: [], // You can add customization logic here
-      ));
+      ),
+    );
+    MSG.snackBar(context, '${product.name} added to cart');
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${product.name} added to cart'),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-
-      // Reset counter after adding to cart
-      setState(() {
-        _productCounters[product.id] = 0;
-      });
-    }
+    // Reset counter after adding to cart
+    // setState(() {
+    //   _productCounters[product.id] = 0;
+    // });
+    // }
   }
 
   @override
@@ -144,10 +142,8 @@ class _SingleCafeState extends State<SingleCafe> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Cafe Header Image
                   _buildCafeHeader(cafe),
 
-                  // Cafe Details Section
                   if (cafe != null) ...[
                     _buildCafeInfo(cafe),
                     _buildCafeDescription(cafe),
@@ -155,15 +151,16 @@ class _SingleCafeState extends State<SingleCafe> {
                     //_buildCafeStats(cafe),
                   ],
 
-                  // Menu Section
                   _buildMenuHeader(),
 
-                  // Products List
                   if (isLoading && products.isEmpty)
                     const Center(
                       child: Padding(
                         padding: EdgeInsets.all(40.0),
-                        child: CircularProgressIndicator(),
+                        child: LoadingDialog(
+                          "Fetching cafes",
+                          color: AppColors.appMainColor,
+                        ),
                       ),
                     )
                   else if (products.isEmpty)
@@ -185,9 +182,10 @@ class _SingleCafeState extends State<SingleCafe> {
       width: AppUtils.deviceScreenSize(context).width,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: cafe?.primaryImageUrl.isNotEmpty == true
-              ? NetworkImage(cafe!.primaryImageUrl)
-              : const AssetImage(AppImages.singleProduct) as ImageProvider,
+          image:
+              cafe?.primaryImageUrl.isNotEmpty == true
+                  ? NetworkImage(cafe!.primaryImageUrl)
+                  : const AssetImage(AppImages.singleProduct) as ImageProvider,
           fit: BoxFit.cover,
         ),
       ),
@@ -244,10 +242,7 @@ class _SingleCafeState extends State<SingleCafe> {
                       child: const Center(
                         child: Padding(
                           padding: EdgeInsets.all(10.0),
-                          child: Icon(
-                            Icons.share,
-                            color: AppColors.white,
-                          ),
+                          child: Icon(Icons.share, color: AppColors.white),
                         ),
                       ),
                     ),
@@ -267,25 +262,14 @@ class _SingleCafeState extends State<SingleCafe> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(10.0, 10, 10, 0),
-          child: TextStyles.textHeadings(
-            textValue: cafe.name,
-            textSize: 20,
-          ),
+          child: TextStyles.textHeadings(textValue: cafe.name, textSize: 20),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(10.0, 10, 10, 0),
           child: Row(
             children: [
-              const Icon(
-                Icons.location_on_outlined,
-                color: AppColors.black,
-              ),
-              Expanded(
-                child: CustomText(
-                  text: cafe.displayLocation,
-                  size: 16,
-                ),
-              ),
+              const Icon(Icons.location_on_outlined, color: AppColors.black),
+              Expanded(child: CustomText(text: cafe.displayLocation, size: 16)),
             ],
           ),
         ),
@@ -307,10 +291,8 @@ class _SingleCafeState extends State<SingleCafe> {
         Padding(
           padding: const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
           child: TextStyles.textDetails(
-            textValue: cafe.description.isNotEmpty
-                ? cafe.description
-                : 'A cozy spot for coffee enthusiasts with a difference. Experience great food and beverages in a welcoming atmosphere.',
-            textSize: 16,
+            textValue:
+                cafe.description,textSize: 16,
             textColor: AppColors.textColor,
           ),
         ),
@@ -327,17 +309,16 @@ class _SingleCafeState extends State<SingleCafe> {
             children: List.generate(5, (index) {
               return Icon(
                 Icons.star,
-                color: index < cafe.averageRating.floor()
-                    ? AppColors.yellow
-                    : AppColors.grey,
+                color:
+                    index < cafe.averageRating.floor()
+                        ? AppColors.yellow
+                        : AppColors.grey,
                 size: 15,
               );
             }),
           ),
           const SizedBox(width: 8),
-          CustomText(
-            text: "(${cafe.totalReviews})",
-          ),
+          CustomText(text: "(${cafe.totalReviews})"),
         ],
       ),
     );
@@ -410,11 +391,7 @@ class _SingleCafeState extends State<SingleCafe> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.restaurant_menu,
-              size: 64,
-              color: AppColors.grey,
-            ),
+            Icon(Icons.restaurant_menu, size: 64, color: AppColors.grey),
             const SizedBox(height: 16),
             TextStyles.textHeadings(
               textValue: 'No menu items available',
@@ -452,16 +429,14 @@ class _SingleCafeState extends State<SingleCafe> {
         if (hasMore)
           const Padding(
             padding: EdgeInsets.all(20.0),
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
+            child: Center(child: CircularProgressIndicator()),
           ),
       ],
     );
   }
 
   Widget _buildMenuContainer(ProductModel product) {
-    final counter = _getCounter(product.id);
+   // final counter = _getCounter(product.id);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 10),
@@ -491,11 +466,12 @@ class _SingleCafeState extends State<SingleCafe> {
                     color: AppColors.grey.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(15),
                     image: DecorationImage(
-                      image: product.primaryImageUrl.isNotEmpty
-                          ? NetworkImage(product.primaryImageUrl)
-                          : const NetworkImage(
-                        'https://via.placeholder.com/115x115/f0f0f0/999999?text=No+Image',
-                      ),
+                      image:
+                          product.primaryImageUrl.isNotEmpty
+                              ? NetworkImage(product.primaryImageUrl)
+                              : const NetworkImage(
+                                'https://via.placeholder.com/115x115/f0f0f0/999999?text=No+Image',
+                              ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -533,17 +509,16 @@ class _SingleCafeState extends State<SingleCafe> {
                               children: List.generate(5, (index) {
                                 return Icon(
                                   Icons.star,
-                                  color: index < product.averageRating.floor()
-                                      ? AppColors.yellow
-                                      : AppColors.grey,
+                                  color:
+                                      index < product.averageRating.floor()
+                                          ? AppColors.yellow
+                                          : AppColors.grey,
                                   size: 15,
                                 );
                               }),
                             ),
                             const SizedBox(width: 4),
-                            CustomText(
-                              text: "(${product.totalReviews})",
-                            ),
+                            CustomText(text: "(${product.totalReviews})"),
                           ],
                         ),
                       ),
@@ -560,38 +535,6 @@ class _SingleCafeState extends State<SingleCafe> {
                               TextStyles.textHeadings(
                                 textValue: '£${product.basePrice}',
                               ),
-
-                              // Quantity Controls
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  // Minus button
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.black,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: IconButton(
-                                      icon: const Icon(Icons.remove),
-                                      onPressed: () => _decrementCounter(product.id),
-                                      color: Colors.white,
-                                      iconSize: 15,
-                                    ),
-                                  ),
-
-                                  // Display counter
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: TextStyles.textHeadings(
-                                      textValue: '$counter',
-                                      textSize: 16,
-                                      textColor: AppColors.black,
-                                    ),
-                                  ),
-
-                                  // Add button
                                   Container(
                                     height: 30,
                                     width: 30,
@@ -601,20 +544,73 @@ class _SingleCafeState extends State<SingleCafe> {
                                     ),
                                     child: Center(
                                       child: IconButton(
-                                        icon: const Icon(Icons.add),
+                                        icon: const Icon(Icons.add_shopping_cart),
                                         onPressed: () {
-                                          _incrementCounter(product.id);
-                                          if (counter >= 0) {
+
                                             _addToCart(product);
-                                          }
+
                                         },
                                         color: Colors.white,
                                         iconSize: 15,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                              // Quantity Controls
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   children: <Widget>[
+                              //     // Minus button
+                              //     Container(
+                              //       height: 30,
+                              //       width: 30,
+                              //       decoration: const BoxDecoration(
+                              //         color: Colors.black,
+                              //         shape: BoxShape.circle,
+                              //       ),
+                              //       child: IconButton(
+                              //         icon: const Icon(Icons.remove),
+                              //         onPressed:
+                              //             () => _decrementCounter(product.id),
+                              //         color: Colors.white,
+                              //         iconSize: 15,
+                              //       ),
+                              //     ),
+                              //
+                              //     // Display counter
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //         horizontal: 20.0,
+                              //       ),
+                              //       child: TextStyles.textHeadings(
+                              //         textValue: '$counter',
+                              //         textSize: 16,
+                              //         textColor: AppColors.black,
+                              //       ),
+                              //     ),
+                              //
+                              //     // Add button
+                              //     Container(
+                              //       height: 30,
+                              //       width: 30,
+                              //       decoration: const BoxDecoration(
+                              //         color: Colors.black,
+                              //         shape: BoxShape.circle,
+                              //       ),
+                              //       child: Center(
+                              //         child: IconButton(
+                              //           icon: const Icon(Icons.add),
+                              //           onPressed: () {
+                              //             _incrementCounter(product.id);
+                              //             if (counter >= 0) {
+                              //               _addToCart(product);
+                              //             }
+                              //           },
+                              //           color: Colors.white,
+                              //           iconSize: 15,
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ],
+                               ),
                             ],
                           ),
                         ),

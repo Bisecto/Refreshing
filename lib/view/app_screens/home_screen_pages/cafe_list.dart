@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:refreshing_co/res/app_icons.dart';
 import 'package:refreshing_co/utills/app_navigator.dart';
 import 'package:refreshing_co/view/app_screens/single_cafe/single_cafe.dart';
+import 'package:refreshing_co/view/widgets/loading_animation.dart';
 
 import '../../../../res/app_colors.dart';
 import '../../../bloc/cafe_bloc/cafe_bloc.dart';
@@ -247,7 +248,7 @@ class _CafeListState extends State<CafeList> {
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
-                    child: CircularProgressIndicator(),
+                    child: LoadingDialog("Fetching cafes",color: AppColors.appMainColor,),
                   ),
                 );
               } else if (state is CafeSearchSuccess) {
@@ -263,7 +264,7 @@ class _CafeListState extends State<CafeList> {
                 return _buildErrorState(state.message);
               }
 
-              return _buildEmptyState();
+              return LoadingDialog("Fetching cafes",color: AppColors.appMainColor,);
             },
           ),
         ],
@@ -412,14 +413,14 @@ class _CafeListState extends State<CafeList> {
                               textSize: 15,
                             )),
                           ),
-                          GestureDetector(
-                            onTap: () => _toggleFavorite(cafe.id),
-                            child: Icon(
-                              isFavorite ? Icons.favorite : Icons.favorite_border,
-                              color: isFavorite ? Colors.red : AppColors.textColor,
-                              size: 24,
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () => _toggleFavorite(cafe.id),
+                          //   child: Icon(
+                          //     isFavorite ? Icons.favorite : Icons.favorite_border,
+                          //     color: isFavorite ? Colors.red : AppColors.textColor,
+                          //     size: 24,
+                          //   ),
+                          // ),
                         ],
                       ),
 
