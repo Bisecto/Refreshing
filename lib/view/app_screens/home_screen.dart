@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:refreshing_co/model/user_model.dart';
 import 'package:refreshing_co/res/app_images.dart';
 import 'package:refreshing_co/utills/app_utils.dart';
 import 'package:refreshing_co/view/widgets/app_custom_text.dart';
@@ -117,35 +118,48 @@ class _HomeScreenState extends State<HomeScreen> {
             physics: ScrollPhysics(),
             child: Column(
               children: [
-
                 Image.asset(AppImages.refresh, height: 70, width: 150),
                 BlocBuilder<AuthBloc, AuthState>(
-
                   builder: (context, state) {
-                    String userName='' ;
-                    String userEmail ='';
-                    String userPhone ='';
-                    String firstname='' ;
-                    String lastname ='';
+                    String userName = '';
+                    String userEmail = '';
+                    String userPhone = '';
+                    String firstname = '';
+                    String lastname = '';
                     // String profileImage='' ;
-                    Placemark? placemark;
-
+                    Placemark placemark;
+                    print(state);
+                    print(state);
+                    print(state);
+                    print(state);
+                    print(state);
                     if (state is AuthAuthenticated) {
-                      userName = state.user.username ??'User';
+                      userName = state.user.username ?? 'User';
                       userEmail = state.user.email ?? 'user@example.com';
                       userPhone = state.user.phoneNumber ?? '';
-                      firstname = state.user.firstName??'' ;
-                      lastname = state.user.lastName??"";
+                      firstname = state.user.firstName ?? '';
+                      lastname = state.user.lastName ?? "";
                       placemark = state.placemark;
+                      print(placemark);
                       // profileImage =
                       //     state.user.profileImage ??   'User';
+                      return CustomAppBar(state.placemark);
+                    } else if (state is AuthSignInSuccess) {
+                      userName = state.user.username ?? 'User';
+                      userEmail = state.user.email ?? 'user@example.com';
+                      userPhone = state.user.phoneNumber ?? '';
+                      firstname = state.user.firstName ?? '';
+                      lastname = state.user.lastName ?? "";
+                      placemark = state.placemark;
+                      print(placemark);
+                      // profileImage =
+                      //     state.user.profileImage ??   'User';
+                      return CustomAppBar(state.placemark);
+                    } else {
+                      return CustomAppBar(Placemark(locality: "...."));
                     }
-
-                    return CustomAppBar(placemark!);
                   },
                 ),
-
-
 
                 Padding(
                   padding: const EdgeInsets.only(top: 1.0),
@@ -158,7 +172,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  Widget CustomAppBar(Placemark placemark){
+
+  Widget CustomAppBar(Placemark placemark) {
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(0.0),
@@ -167,32 +182,20 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Row(
               children: [
-                Icon(Icons.location_on_outlined,size: 25,),
-                SizedBox(
-                  width: 5,
-                ),
+                Icon(Icons.location_on_outlined, size: 25),
+                SizedBox(width: 5),
                 TextStyles.textHeadings(textValue: placemark.locality!),
-
               ],
             ),
             Row(
               children: [
-                SvgPicture.asset(
-                  AppIcons.notification,
-                  height: 25,
-                  width: 25,
-                ),SizedBox(
-                  width: 5,
-                ),
+                SvgPicture.asset(AppIcons.notification, height: 25, width: 25),
+                SizedBox(width: 5),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     widget.onPageChanged(1);
                   },
-                  child: SvgPicture.asset(
-                    AppIcons.bag,
-                    height: 25,
-                    width: 25,
-                  ),
+                  child: SvgPicture.asset(AppIcons.bag, height: 25, width: 25),
                 ),
               ],
             ),

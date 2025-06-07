@@ -62,10 +62,14 @@ class _SignInScreenState extends State<SignInScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSignInSuccess) {
+            print(state.token);
+            print(state.placemark);
+            print(state.position);
             AppNavigator.pushAndRemovePreviousPages(
               context,
               page: LandingPage(selectedIndex: 0),
             );
+
             // ScaffoldMessenger.of(context).showSnackBar(
             //   SnackBar(
             //     content: Text(state),

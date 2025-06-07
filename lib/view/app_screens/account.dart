@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:refreshing_co/res/app_icons.dart';
 import 'package:refreshing_co/utills/app_utils.dart';
 
+import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_colors.dart';
 import '../widgets/app_custom_text.dart';
 import '../widgets/form_button.dart';
@@ -200,6 +202,36 @@ class AccountScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Sign Out'),
+          content: const Text('Are you sure you want to sign out?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: AppColors.textColor),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<AuthBloc>().add(SignOutRequested());
+              },
+              child: Text(
+                'Sign Out',
+                style: TextStyle(color: AppColors.appMainColor),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
