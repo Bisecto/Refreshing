@@ -10,7 +10,8 @@ class CartLoaded extends CartState {
   final CartSummary cartSummary;
 
   CartLoaded({required this.cartSummary});
-}
+}class CartEmpty extends CartState {}
+
 
 class CartCountLoaded extends CartState {
   final int count;

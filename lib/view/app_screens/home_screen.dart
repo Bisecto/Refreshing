@@ -14,7 +14,6 @@ import 'package:refreshing_co/view/widgets/form_input.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_icons.dart';
-import 'home_screen_pages/app_bar.dart';
 import 'home_screen_pages/cafe_list.dart';
 import 'home_screen_pages/filtering_items.dart';
 

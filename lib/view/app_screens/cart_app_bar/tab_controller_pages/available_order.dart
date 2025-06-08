@@ -15,6 +15,7 @@ import '../../../../res/app_images.dart';
 import '../../../../utills/app_utils.dart';
 import '../../../widgets/app_custom_text.dart';
 import '../../../widgets/form_input.dart';
+import 'order_details.dart';
 
 
 class AvailableOrder extends StatefulWidget {
@@ -156,7 +157,7 @@ class _AvailableOrderState extends State<AvailableOrder> {
 
   Widget _buildEmptyCartState() {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(0.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -195,16 +196,11 @@ class _AvailableOrderState extends State<AvailableOrder> {
 
   Widget _buildCartContent(CartSummary cartSummary) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(0.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Cart Header
-          _buildCartHeader(cartSummary),
 
-          const SizedBox(height: 20),
-
-          // Search Bar
           _buildSearchBar(),
 
           const SizedBox(height: 20),
@@ -217,7 +213,7 @@ class _AvailableOrderState extends State<AvailableOrder> {
           const SizedBox(height: 20),
 
           // Order Summary
-          _buildOrderSummary(cartSummary),
+         // _buildOrderSummary(cartSummary),
 
           const SizedBox(height: 20),
 
@@ -228,42 +224,6 @@ class _AvailableOrderState extends State<AvailableOrder> {
     );
   }
 
-  Widget _buildCartHeader(CartSummary cartSummary) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextStyles.textHeadings(
-              textValue: 'Your Cart',
-              textSize: 24,
-            ),
-            CustomText(
-              text: '${cartSummary.itemCount} item${cartSummary.itemCount != 1 ? 's' : ''} in your cart',
-              size: 16,
-              color: AppColors.textColor,
-            ),
-          ],
-        ),
-        GestureDetector(
-          onTap: _showClearCartDialog,
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.delete_outline,
-              color: Colors.red,
-              size: 24,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildSearchBar() {
     return CustomTextFormField(
@@ -278,6 +238,7 @@ class _AvailableOrderState extends State<AvailableOrder> {
   Widget _buildCartItems(List<CartItemModel> items) {
     return ListView.builder(
       itemCount: items.length,
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final item = items[index];
         return _buildCartItemContainer(item, index);
@@ -285,6 +246,85 @@ class _AvailableOrderState extends State<AvailableOrder> {
     );
   }
 
+  // Widget _buildCartItemContainer(CartItemModel item, int index) {
+  //   return Container(
+  //     margin: const EdgeInsets.only(bottom: 12),
+  //     padding: const EdgeInsets.all(12),
+  //     decoration: BoxDecoration(
+  //       color: AppColors.grey.withOpacity(0.2),
+  //       border: Border.all(width: 1, color: AppColors.grey.withOpacity(0.3)),
+  //       borderRadius: BorderRadius.circular(12),
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         Row(
+  //           children: [
+  //             // Product Image
+  //             Container(
+  //               width: 60,
+  //               height: 60,
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(8),
+  //                 image: DecorationImage(
+  //                   image: item.productImage.isNotEmpty
+  //                       ? NetworkImage(item.productImage)
+  //                       : AssetImage(AppImages.coffe) as ImageProvider,
+  //                   fit: BoxFit.cover,
+  //                 ),
+  //               ),
+  //             ),
+  //
+  //             const SizedBox(width: 12),
+  //
+  //             // Product Details
+  //             Expanded(
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   TextStyles.textHeadings(
+  //                     textValue: item.productName,
+  //                     textSize: 16,
+  //                   ),
+  //                   //if (item.customizationDisplay.isNotEmpty)
+  //                     Padding(
+  //                       padding: const EdgeInsets.only(top: 4),
+  //                       child: CustomText(
+  //                         text: "${item.quantity} item ",
+  //                         size: 12,
+  //                         color: AppColors.textColor,
+  //                       ),
+  //                     ),
+  //                   TextStyles.textHeadings(
+  //                     textValue: '£${item.totalPrice.toStringAsFixed(2)}',
+  //                     textSize: 16,
+  //                     textColor: AppColors.appMainColor,
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //
+  //             // Quantity Controls
+  //            // _buildQuantityControls(item),
+  //           ],
+  //         ),
+  //         FormButton(
+  //           onPressed: () {
+  //             Navigator.of(context).push(
+  //               MaterialPageRoute(
+  //                 builder: (context) => CartItemDetailsPage(cartItem: item),
+  //               ),
+  //             );            },
+  //           text: "View details",
+  //           bgColor: AppColors.appMainColor,
+  //           textColor: AppColors.white,
+  //           weight: FontWeight.bold,
+  //           borderRadius: 12,
+  //           height: 40,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _buildCartItemContainer(CartItemModel item, int index) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -320,39 +360,114 @@ class _AvailableOrderState extends State<AvailableOrder> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextStyles.textHeadings(
-                      textValue: item.productName,
-                      textSize: 16,
-                    ),
-                    if (item.customizationDisplay.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: CustomText(
-                          text: item.customizationDisplay,
-                          size: 12,
-                          color: AppColors.textColor,
+                    Row(
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: TextStyles.textHeadings(
+                            textValue: item.productName,
+                            textSize: 13,
+                          ),
                         ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: CustomText(
+                        text: _getCustomizationSummary(item),
+                        size: 12,
+                        color: AppColors.textColor,
                       ),
-                    const SizedBox(height: 8),
-                    TextStyles.textHeadings(
-                      textValue: '£${item.totalPrice.toStringAsFixed(2)}',
-                      textSize: 16,
-                      textColor: AppColors.appMainColor,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Row(
+                        children: [
+                          CustomText(
+                            text: "${item.quantity} item${item.quantity > 1 ? 's' : ''} • ",
+                            size: 12,
+                            color: AppColors.textColor,
+                          ),
+                          TextStyles.textHeadings(
+                            textValue: '£${item.totalPrice}',
+                            textSize: 16,
+                            textColor: AppColors.appMainColor,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
 
-              // Quantity Controls
-              _buildQuantityControls(item),
+              // Quick quantity controls (optional)
+              _buildQuickQuantityControls(item),
             ],
+          ),
+
+
+          FormButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => CartItemDetailsPage(cartItem: item),
+                ),
+              );
+            },
+            text: "View details",
+            bgColor: AppColors.appMainColor,
+            textColor: AppColors.white,
+            weight: FontWeight.bold,
+            borderRadius: 12,
+            height: 40,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildQuantityControls(CartItemModel item) {
+// Add these helper methods to your _AvailableOrderState class:
+
+  String _getCustomizationSummary(CartItemModel item) {
+    if (item.customizations.isEmpty) return 'No customizations';
+
+    List<String> summaryParts = [];
+
+    // Try to find size and milk type first as they're most important
+    String? size;
+    String? milkType;
+
+    for (final entry in item.customizations.entries) {
+      final customization = entry.value;
+      final type = (customization['customizationType'] as String?)?.toLowerCase();
+
+      if (type == 'size') {
+        size = customization['optionName'] as String?;
+      } else if (type == 'milk') {
+        milkType = customization['optionName'] as String?;
+      }
+    }
+
+    if (size != null) summaryParts.add('Size: $size');
+    if (milkType != null) summaryParts.add('$milkType');
+
+    // If we have space, add one more customization
+    if (summaryParts.length < 2) {
+      for (final entry in item.customizations.entries) {
+        final customization = entry.value;
+        final type = (customization['customizationType'] as String?)?.toLowerCase();
+
+        if (type != 'size' && type != 'milk') {
+          summaryParts.add('${customization['optionName']}');
+          break;
+        }
+      }
+    }
+
+    return summaryParts.take(2).join(' • ');
+  }
+
+  Widget _buildQuickQuantityControls(CartItemModel item) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -370,24 +485,24 @@ class _AvailableOrderState extends State<AvailableOrder> {
                   quantity: item.quantity - 1,
                 ));
               } else {
-                context.read<CartBloc>().add(RemoveCartItemEvent(itemId: item.id));
+                _showRemoveItemDialog(item);
               }
             },
             child: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(6),
               child: Icon(
                 item.quantity > 1 ? Icons.remove : Icons.delete_outline,
-                size: 18,
+                size: 16,
                 color: item.quantity > 1 ? AppColors.black : Colors.red,
               ),
             ),
           ),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             child: TextStyles.textHeadings(
               textValue: '${item.quantity}',
-              textSize: 16,
+              textSize: 14,
             ),
           ),
 
@@ -399,10 +514,10 @@ class _AvailableOrderState extends State<AvailableOrder> {
               ));
             },
             child: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(6),
               child: const Icon(
                 Icons.add,
-                size: 18,
+                size: 16,
                 color: AppColors.black,
               ),
             ),
@@ -412,104 +527,190 @@ class _AvailableOrderState extends State<AvailableOrder> {
     );
   }
 
-  Widget _buildOrderSummary(CartSummary cartSummary) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.grey.withOpacity(0.2)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextStyles.textHeadings(
-            textValue: 'Order Summary',
-            textSize: 18,
-          ),
-          const SizedBox(height: 12),
-
-          // Subtotal
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const CustomText(
-                text: "Subtotal",
-                color: AppColors.textColor,
-                size: 15,
-              ),
-              TextStyles.richTexts(
-                text1: '£',
-                size: 15,
-                color: AppColors.black,
-                text2: ' ${cartSummary.subtotal.toStringAsFixed(2)}',
-                color2: AppColors.textColor,
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 8),
-
-          // Tax
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const CustomText(
-                text: "Tax",
-                color: AppColors.textColor,
-                size: 15,
-              ),
-              TextStyles.richTexts(
-                text1: '£',
-                size: 15,
-                color: AppColors.black,
-                text2: ' ${cartSummary.tax.toStringAsFixed(2)}',
-                color2: AppColors.textColor,
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-          const Divider(),
-          const SizedBox(height: 8),
-
-          // Total
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextStyles.textHeadings(
-                textValue: 'Total',
-                textSize: 18,
-              ),
-              TextStyles.richTexts(
-                text1: '£',
-                size: 18,
-                color: AppColors.black,
-                text2: ' ${cartSummary.total.toStringAsFixed(2)}',
-                color2: AppColors.black,
-              ),
-            ],
-          ),
-        ],
-      ),
+  void _showRemoveItemDialog(CartItemModel item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Remove Item'),
+          content: Text('Are you sure you want to remove ${item.productName} from your cart?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<CartBloc>().add(RemoveCartItemEvent(
+                  itemId: item.id,
+                ));
+                Navigator.of(context).pop();
+              },
+              child: const Text('Remove', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
     );
   }
+  // Widget _buildQuantityControls(CartItemModel item) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       color: AppColors.white,
+  //       borderRadius: BorderRadius.circular(20),
+  //       border: Border.all(color: AppColors.grey.withOpacity(0.3)),
+  //     ),
+  //     child: Row(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: [
+  //         GestureDetector(
+  //           onTap: () {
+  //             if (item.quantity > 1) {
+  //               context.read<CartBloc>().add(UpdateCartItemEvent(
+  //                 itemId: item.id,
+  //                 quantity: item.quantity - 1,
+  //               ));
+  //             } else {
+  //               context.read<CartBloc>().add(RemoveCartItemEvent(itemId: item.id));
+  //             }
+  //           },
+  //           child: Container(
+  //             padding: const EdgeInsets.all(8),
+  //             child: Icon(
+  //               item.quantity > 1 ? Icons.remove : Icons.delete_outline,
+  //               size: 18,
+  //               color: item.quantity > 1 ? AppColors.black : Colors.red,
+  //             ),
+  //           ),
+  //         ),
+  //
+  //         Container(
+  //           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  //           child: TextStyles.textHeadings(
+  //             textValue: '${item.quantity}',
+  //             textSize: 16,
+  //           ),
+  //         ),
+  //
+  //         GestureDetector(
+  //           onTap: () {
+  //             context.read<CartBloc>().add(UpdateCartItemEvent(
+  //               itemId: item.id,
+  //               quantity: item.quantity + 1,
+  //             ));
+  //           },
+  //           child: Container(
+  //             padding: const EdgeInsets.all(8),
+  //             child: const Icon(
+  //               Icons.add,
+  //               size: 18,
+  //               color: AppColors.black,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // Widget _buildOrderSummary(CartSummary cartSummary) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color: AppColors.grey.withOpacity(0.1),
+  //       borderRadius: BorderRadius.circular(12),
+  //       border: Border.all(color: AppColors.grey.withOpacity(0.2)),
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         TextStyles.textHeadings(
+  //           textValue: 'Order Summary',
+  //           textSize: 18,
+  //         ),
+  //         const SizedBox(height: 12),
+  //
+  //         // Subtotal
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             const CustomText(
+  //               text: "Subtotal",
+  //               color: AppColors.textColor,
+  //               size: 15,
+  //             ),
+  //             TextStyles.richTexts(
+  //               text1: '£',
+  //               size: 15,
+  //               color: AppColors.black,
+  //               text2: ' ${cartSummary.subtotal.toStringAsFixed(2)}',
+  //               color2: AppColors.textColor,
+  //             ),
+  //           ],
+  //         ),
+  //
+  //         const SizedBox(height: 8),
+  //
+  //         // Tax
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             const CustomText(
+  //               text: "Tax",
+  //               color: AppColors.textColor,
+  //               size: 15,
+  //             ),
+  //             TextStyles.richTexts(
+  //               text1: '£',
+  //               size: 15,
+  //               color: AppColors.black,
+  //               text2: ' ${cartSummary.tax.toStringAsFixed(2)}',
+  //               color2: AppColors.textColor,
+  //             ),
+  //           ],
+  //         ),
+  //
+  //         const SizedBox(height: 12),
+  //         const Divider(),
+  //         const SizedBox(height: 8),
+  //
+  //         // Total
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             TextStyles.textHeadings(
+  //               textValue: 'Total',
+  //               textSize: 18,
+  //             ),
+  //             TextStyles.richTexts(
+  //               text1: '£',
+  //               size: 18,
+  //               color: AppColors.black,
+  //               text2: ' ${cartSummary.total.toStringAsFixed(2)}',
+  //               color2: AppColors.black,
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildActionButtons(CartSummary cartSummary) {
     return Column(
       children: [
         // Order Now Button
-        FormButton(
-          onPressed: () {
-            _showOrderSuccessDialog();
-          },
-          text: "Order Now (£${cartSummary.total.toStringAsFixed(2)})",
-          bgColor: AppColors.appMainColor,
-          textColor: AppColors.white,
-          weight: FontWeight.bold,
-          borderRadius: 12,
-          height: 56,
-        ),
+        // FormButton(
+        //   onPressed: () {
+        //     _showOrderSuccessDialog();
+        //   },
+        //   text: "Order Now (£${cartSummary.total.toStringAsFixed(2)})",
+        //   bgColor: AppColors.appMainColor,
+        //   textColor: AppColors.white,
+        //   weight: FontWeight.bold,
+        //   borderRadius: 12,
+        //   height: 56,
+        // ),
 
         const SizedBox(height: 12),
 
@@ -518,7 +719,7 @@ class _AvailableOrderState extends State<AvailableOrder> {
           onPressed: () {
             widget.onPageChanged(0);
           },
-          text: "Continue Shopping",
+          text: "Explore menu",
           bgColor: AppColors.grey.withOpacity(0.3),
           textColor: AppColors.black,
           weight: FontWeight.w600,

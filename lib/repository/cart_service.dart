@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../model/cart_model.dart';
 
 class CartService {
+
   static const String baseUrl = 'https://api.refreshandco.com/api/v1';
 
   Future<Map<String, dynamic>> addToCart({
@@ -52,42 +53,29 @@ class CartService {
       };
     }
   }
-
-  Future<Map<String, dynamic>> getCart({    required String token
+  Future<CartResponse> getCart({    required String token
   }) async {
     try {
+      // Replace with your actual HTTP client
       final response = await http.get(
         Uri.parse('$baseUrl/cart'),
-        headers: {
+        headers:  {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
       );
 
-      final responseData = json.decode(response.body);
-print(responseData);
       if (response.statusCode == 200) {
-        final cartItems = (responseData['items'] as List?)
-            ?.map((e) => CartItemModel.fromJson(e))
-            .toList() ?? [];
-
-        return {
-          'success': true,
-          'data': cartItems,
-        };
+        final data = json.decode(response.body);
+        return CartResponse.fromJson(data);
       } else {
-        return {
-          'success': false,
-          'message': responseData['message'] ?? 'Failed to fetch cart',
-        };
+        throw Exception('Failed to load cart: ${response.statusCode}');
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Network error occurred',
-      };
+      throw Exception('Network error: $e');
     }
   }
+
 
   Future<Map<String, dynamic>> getCartCount({    required String token
   }) async {
@@ -192,6 +180,7 @@ print(responseData);
     }
   }
 
+
   Future<Map<String, dynamic>> clearCart({    required String token
   }) async {
     try {
@@ -203,23 +192,9 @@ print(responseData);
         },
       );
 
-      if (response.statusCode == 200 || response.statusCode == 204) {
-        return {
-          'success': true,
-          'message': 'Cart cleared successfully',
-        };
-      } else {
-        final responseData = json.decode(response.body);
-        return {
-          'success': false,
-          'message': responseData['message'] ?? 'Failed to clear cart',
-        };
-      }
+      return json.decode(response.body);
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Network error occurred',
-      };
+      throw Exception('Network error: $e');
     }
   }
 }

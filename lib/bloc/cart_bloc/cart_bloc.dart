@@ -9,7 +9,7 @@ import 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   final CartService _cartService;
-  CartSummary? _currentCartSummary;
+  CartSummaryWithItemsList? _currentCartSummary;
 
   CartBloc({required CartService cartService})
     : _cartService = cartService,
@@ -22,23 +22,30 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<GetCartCountEvent>(_onGetCartCount);
   }
 
-  Future<void> _onLoadCart(LoadCart event, Emitter<CartState> emit) async {
-    emit(CartLoading());
+  CartSummaryWithItemsList? get currentCartSummary => _currentCartSummary;
 
+  int get itemCount => _currentCartSummary?.itemCount ?? 0;
+
+  Future<void> _onLoadCart(LoadCart event, Emitter<CartState> emit) async {
     try {
+      emit(CartLoading());
       String token = await SharedPref.getString(SharedPrefKey.authTokenKey);
 
-      final result = await _cartService.getCart(token: token);
+      final cartResponse = await _cartService.getCart(token: token);
 
-      if (result['success'] == true) {
-        final cartItems = result['data'] as List<CartItemModel>;
-        _currentCartSummary = CartSummary.fromItems(cartItems);
-        emit(CartLoaded(cartSummary: _currentCartSummary!));
+      if (cartResponse.items.isEmpty) {
+        _currentCartSummary = null;
+        emit(CartEmpty());
       } else {
-        emit(CartError(message: result['message'] ?? 'Failed to load cart'));
+        _currentCartSummary = CartSummaryWithItemsList(
+          itemCount: cartResponse.summary.itemCount,
+          total: cartResponse.summary.total,
+          items: cartResponse.items,
+        );
+        emit(CartLoaded(cartSummary: _currentCartSummary!));
       }
     } catch (e) {
-      emit(CartError(message: 'Network error occurred'));
+      emit(CartError(message: _getErrorMessage(e)));
     }
   }
 
@@ -55,11 +62,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         customizations: event.customizations,
         token: token,
       );
-print(token);
-print(result);
-print(result);
-print(result);
-print(result);
+      print(token);
+      print(result);
+      print(result);
+      print(result);
+      print(result);
       if (result['success'] == true) {
         emit(CartItemAdded(message: result['message'] ?? 'Item added to cart'));
         // Reload cart to get updated data
@@ -88,9 +95,10 @@ print(result);
       );
 
       if (result['success'] == true) {
+        add(LoadCart());
+
         emit(CartItemUpdated(message: result['message'] ?? 'Cart updated'));
         // Reload cart to get updated data
-        add(LoadCart());
       } else {
         emit(CartError(message: result['message'] ?? 'Failed to update cart'));
       }
@@ -112,9 +120,9 @@ print(result);
       );
 
       if (result['success'] == true) {
-        emit(CartItemRemoved(message: result['message'] ?? 'Item removed'));
-        // Reload cart to get updated data
         add(LoadCart());
+
+        emit(CartItemRemoved(message: result['message'] ?? 'Item removed'));
       } else {
         emit(CartError(message: result['message'] ?? 'Failed to remove item'));
       }
@@ -128,19 +136,20 @@ print(result);
     Emitter<CartState> emit,
   ) async {
     try {
+      emit(CartLoading());
       String token = await SharedPref.getString(SharedPrefKey.authTokenKey);
 
-      final result = await _cartService.clearCart(token: token);
+      final result = await _cartService.clearCart(token:token );
 
       if (result['success'] == true) {
-        _currentCartSummary = CartSummary.fromItems([]);
-        emit(CartCleared(message: result['message'] ?? 'Cart cleared'));
-        emit(CartLoaded(cartSummary: _currentCartSummary!));
+        _currentCartSummary = null;
+        emit(CartCleared(message: 'Cart cleared successfully'));
+        emit(CartEmpty());
       } else {
         emit(CartError(message: result['message'] ?? 'Failed to clear cart'));
       }
     } catch (e) {
-      emit(CartError(message: 'Network error occurred'));
+      emit(CartError(message: _getErrorMessage(e)));
     }
   }
 
@@ -165,12 +174,11 @@ print(result);
     }
   }
 
-  // Getters
-  CartSummary? get currentCartSummary => _currentCartSummary;
-
-  bool get hasItems => _currentCartSummary?.items.isNotEmpty ?? false;
-
-  int get itemCount => _currentCartSummary?.itemCount ?? 0;
-
-  double get totalAmount => _currentCartSummary?.total ?? 0.0;
+  String _getErrorMessage(dynamic error) {
+    if (error.toString().toLowerCase().contains('network') ||
+        error.toString().toLowerCase().contains('connection')) {
+      return 'Network error. Please check your connection and try again.';
+    }
+    return 'Something went wrong. Please try again.';
+  }
 }

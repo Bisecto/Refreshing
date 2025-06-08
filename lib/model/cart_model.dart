@@ -1,119 +1,332 @@
-class CartItemModel {
-  final String id;
-  final String productId;
-  final int quantity;
-  final Map<String, dynamic> customizations;
-  final double price;
-  final String productName;
-  final String productImage;
-  final String? productDescription;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+class CartResponse {
+  final List<CartItemModel> items;
+  final CartSummary summary;
 
-  CartItemModel({
-    required this.id,
-    required this.productId,
-    required this.quantity,
-    required this.customizations,
-    required this.price,
-    required this.productName,
-    required this.productImage,
-    this.productDescription,
-    required this.createdAt,
-    required this.updatedAt,
+  CartResponse({
+    required this.items,
+    required this.summary,
   });
 
-  factory CartItemModel.fromJson(Map<String, dynamic> json) {
-    return CartItemModel(
-      id: json['id'] ?? '',
-      productId: json['productId'] ?? '',
-      quantity: json['quantity'] ?? 0,
-      customizations: Map<String, dynamic>.from(json['customizations'] ?? {}),
-      price: (json['price'] ?? 0.0).toDouble(),
-      productName: json['product']?['name'] ?? '',
-      productImage: json['product']?['images']?.first?['url'] ?? '',
-      productDescription: json['product']?['description'],
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+  factory CartResponse.fromJson(Map<String, dynamic> json) {
+    return CartResponse(
+      items: (json['items'] as List<dynamic>?)
+          ?.map((item) => CartItemModel.fromJson(item as Map<String, dynamic>))
+          .toList() ?? [],
+      summary: CartSummary.fromJson(json['summary'] as Map<String, dynamic>? ?? {}),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'productId': productId,
-      'quantity': quantity,
-      'customizations': customizations,
+      'items': items.map((item) => item.toJson()).toList(),
+      'summary': summary.toJson(),
     };
   }
+}
 
-  double get totalPrice => price * quantity;
+class CartItemModel {
+  final String id;
+  final int quantity;
+  final Map<String, dynamic> customizations;
+  final String totalPrice;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String userId;
+  final String productId;
+  final ProductInCart product;
 
-  String get customizationDisplay {
-    if (customizations.isEmpty) return '';
+  CartItemModel({
+    required this.id,
+    required this.quantity,
+    required this.customizations,
+    required this.totalPrice,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.userId,
+    required this.productId,
+    required this.product,
+  });
 
-    final customizationStrings = customizations.entries
-        .map((e) => '${e.key}: ${e.value}')
-        .toList();
+  // Computed properties for easier access
+  String get productName => product.name;
+  String get productImage => product.primaryImageUrl;
 
-    return customizationStrings.join(', ');
+  factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    return CartItemModel(
+      id: json['id'] ?? '',
+      quantity: json['quantity'] ?? 0,
+      customizations: Map<String, dynamic>.from(json['customizations'] ?? {}),
+      totalPrice: json['totalPrice'] ?? '0.00',
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
+      userId: json['userId'] ?? '',
+      productId: json['productId'] ?? '',
+      product: ProductInCart.fromJson(json['product'] as Map<String, dynamic>? ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'quantity': quantity,
+      'customizations': customizations,
+      'totalPrice': totalPrice,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'userId': userId,
+      'productId': productId,
+      'product': product.toJson(),
+    };
   }
 
   CartItemModel copyWith({
     String? id,
-    String? productId,
     int? quantity,
     Map<String, dynamic>? customizations,
-    double? price,
-    String? productName,
-    String? productImage,
-    String? productDescription,
+    String? totalPrice,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? userId,
+    String? productId,
+    ProductInCart? product,
   }) {
     return CartItemModel(
       id: id ?? this.id,
-      productId: productId ?? this.productId,
       quantity: quantity ?? this.quantity,
       customizations: customizations ?? this.customizations,
-      price: price ?? this.price,
-      productName: productName ?? this.productName,
-      productImage: productImage ?? this.productImage,
-      productDescription: productDescription ?? this.productDescription,
+      totalPrice: totalPrice ?? this.totalPrice,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      userId: userId ?? this.userId,
+      productId: productId ?? this.productId,
+      product: product ?? this.product,
     );
   }
 }
 
-class CartSummary {
-  final List<CartItemModel> items;
-  final double subtotal;
-  final double tax;
-  final double total;
-  final int itemCount;
+class ProductInCart {
+  final String id;
+  final String name;
+  final String description;
+  final String basePrice;
+  final bool isAvailable;
+  final double averageRating;
+  final int totalReviews;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String createdBy;
+  final String categoryId;
+  final String cafeId;
+  final List<ProductImage> images;
+  final ProductCategory category;
 
-  CartSummary({
-    required this.items,
-    required this.subtotal,
-    required this.tax,
-    required this.total,
-    required this.itemCount,
+  ProductInCart({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.basePrice,
+    required this.isAvailable,
+    required this.averageRating,
+    required this.totalReviews,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.createdBy,
+    required this.categoryId,
+    required this.cafeId,
+    required this.images,
+    required this.category,
   });
 
-  factory CartSummary.fromItems(List<CartItemModel> items) {
-    final subtotal = items.fold(0.0, (sum, item) => sum + item.totalPrice);
-    final tax = subtotal * 0.1; // 10% tax
-    final total = subtotal + tax;
-    final itemCount = items.fold(0, (sum, item) => sum + item.quantity);
+  String get primaryImageUrl {
+    final primaryImage = images.where((img) => img.isPrimary).firstOrNull;
+    return primaryImage?.url ?? (images.isNotEmpty ? images.first.url : '');
+  }
 
-    return CartSummary(
-      items: items,
-      subtotal: subtotal,
-      tax: tax,
-      total: total,
-      itemCount: itemCount,
+  factory ProductInCart.fromJson(Map<String, dynamic> json) {
+    return ProductInCart(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      basePrice: json['basePrice'] ?? '0.00',
+      isAvailable: json['isAvailable'] ?? false,
+      averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0.0,
+      totalReviews: json['totalReviews'] ?? 0,
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
+      createdBy: json['createdBy'] ?? '',
+      categoryId: json['categoryId'] ?? '',
+      cafeId: json['cafeId'] ?? '',
+      images: (json['images'] as List<dynamic>?)
+          ?.map((img) => ProductImage.fromJson(img as Map<String, dynamic>))
+          .toList() ?? [],
+      category: ProductCategory.fromJson(json['category'] as Map<String, dynamic>? ?? {}),
     );
   }
 
-  bool get isEmpty => items.isEmpty;
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'basePrice': basePrice,
+      'isAvailable': isAvailable,
+      'averageRating': averageRating,
+      'totalReviews': totalReviews,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'createdBy': createdBy,
+      'categoryId': categoryId,
+      'cafeId': cafeId,
+      'images': images.map((img) => img.toJson()).toList(),
+      'category': category.toJson(),
+    };
+  }
+}
+
+class ProductImage {
+  final String id;
+  final String url;
+  final String altText;
+  final bool isPrimary;
+  final DateTime createdAt;
+  final String productId;
+
+  ProductImage({
+    required this.id,
+    required this.url,
+    required this.altText,
+    required this.isPrimary,
+    required this.createdAt,
+    required this.productId,
+  });
+
+  factory ProductImage.fromJson(Map<String, dynamic> json) {
+    return ProductImage(
+      id: json['id'] ?? '',
+      url: json['url'] ?? '',
+      altText: json['altText'] ?? '',
+      isPrimary: json['isPrimary'] ?? false,
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      productId: json['productId'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'url': url,
+      'altText': altText,
+      'isPrimary': isPrimary,
+      'createdAt': createdAt.toIso8601String(),
+      'productId': productId,
+    };
+  }
+}
+
+class ProductCategory {
+  final String id;
+  final String name;
+  final String description;
+  final String image;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  ProductCategory({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.image,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory ProductCategory.fromJson(Map<String, dynamic> json) {
+    return ProductCategory(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      image: json['image'] ?? '',
+      isActive: json['isActive'] ?? false,
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'image': image,
+      'isActive': isActive,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
+}
+
+class CartSummary {
+  final int itemCount;
+  final String total;
+
+  CartSummary({
+    required this.itemCount,
+    required this.total,
+  });
+
+  bool get isEmpty => itemCount == 0;
+
+  List<CartItemModel> get items => []; // This will be set from CartResponse
+
+  double get totalAsDouble => double.tryParse(total) ?? 0.0;
+  double get subtotal => totalAsDouble; // Adjust based on your needs
+  double get tax => 1.0; // Fixed tax for now, adjust as needed
+
+  factory CartSummary.fromJson(Map<String, dynamic> json) {
+    return CartSummary(
+      itemCount: json['itemCount'] ?? 0,
+      total: json['total'] ?? '0.00',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'itemCount': itemCount,
+      'total': total,
+    };
+  }
+
+  CartSummary copyWith({
+    int? itemCount,
+    String? total,
+  }) {
+    return CartSummary(
+      itemCount: itemCount ?? this.itemCount,
+      total: total ?? this.total,
+    );
+  }
+}
+
+// Extension to add items list to CartSummary
+extension CartSummaryWithItems on CartSummary {
+  CartSummary withItems(List<CartItemModel> items) {
+    return CartSummaryWithItemsList(
+      itemCount: itemCount,
+      total: total,
+      items: items,
+    );
+  }
+}
+
+class CartSummaryWithItemsList extends CartSummary {
+  @override
+  final List<CartItemModel> items;
+
+  CartSummaryWithItemsList({
+    required int itemCount,
+    required String total,
+    required this.items,
+  }) : super(itemCount: itemCount, total: total);
 }
