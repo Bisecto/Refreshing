@@ -12,10 +12,14 @@ import 'package:refreshing_co/view/widgets/form_button.dart';
 import 'package:refreshing_co/view/widgets/form_input.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
+import '../../bloc/notification_bloc/notification_bloc.dart';
+import '../../bloc/notification_bloc/notification_event.dart';
 import '../../res/app_colors.dart';
 import '../../res/app_icons.dart';
 import 'home_screen_pages/cafe_list.dart';
 import 'home_screen_pages/filtering_items.dart';
+import 'home_screen_pages/notification_modal/notification.dart';
+import 'home_screen_pages/notification_modal/notification_badge.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function(int) onPageChanged;
@@ -105,7 +109,16 @@ class _HomeScreenState extends State<HomeScreen> {
   //     );
   //   });
   // }
-
+@override
+  void initState() {
+    // TODO: implement initState
+  Future.delayed(const Duration(seconds: 1), () {
+    if (mounted) {
+      context.read<NotificationBloc>().add(LoadUnreadCountEvent());
+    }
+  });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -188,14 +201,33 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Row(
               children: [
-                SvgPicture.asset(AppIcons.notification, height: 25, width: 25),
-                SizedBox(width: 5),
-                GestureDetector(
+                NotificationBadge(
                   onTap: () {
-                    widget.onPageChanged(1);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationPage(),
+                      ),
+                    );
                   },
-                  child: SvgPicture.asset(AppIcons.bag, height: 25, width: 25),
+                  child: AnimatedNotificationIcon(
+                    size: 24,
+                    color: AppColors.appMainColor,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationPage(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
+                SizedBox(width: 5),
+                // GestureDetector(
+                //   onTap: () {
+                //     widget.onPageChanged(1);
+                //   },
+                //   child: SvgPicture.asset(AppIcons.bag, height: 25, width: 25),
+                // ),
               ],
             ),
           ],
