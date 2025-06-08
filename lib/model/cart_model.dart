@@ -309,7 +309,6 @@ class CartSummary {
   }
 }
 
-// Extension to add items list to CartSummary
 extension CartSummaryWithItems on CartSummary {
   CartSummary withItems(List<CartItemModel> items) {
     return CartSummaryWithItemsList(
