@@ -1,31 +1,41 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:refreshing_co/bloc/product_bloc/product_event.dart';
 import 'package:refreshing_co/bloc/product_bloc/product_state.dart';
+import 'package:refreshing_co/repository/auth_service.dart';
 import '../../model/cafe/cafe_model.dart';
 import '../../model/product/cart_item.dart';
 import '../../model/product/product_model.dart';
 import '../../repository/product_service.dart';
-
+import '../../res/sharedpref_key.dart';
+import '../../utills/shared_preferences.dart';
+import '../cart_bloc/cart_bloc.dart';
+import '../cart_bloc/cart_event.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  final ProductService _productService;
+  final ProductService productService;
+  final AuthRepository authService;
+  final CartBloc cartBloc;
+
   CafeModel? _currentCafe;
   List<ProductModel> _allProducts = [];
   List<CartItem> _cartItems = [];
   String? _currentCafeId;
   int _currentPage = 1;
+  bool _useAutoTokens = true; // Toggle for migration
 
-  ProductBloc({required ProductService productService})
-      : _productService = productService,
+  ProductBloc({
+    required this.productService,
+    required this.authService,
+    required this.cartBloc,
+    bool useAutoTokens = true, // Default to using auto tokens
+  }) : _useAutoTokens = useAutoTokens,
         super(ProductInitial()) {
     on<LoadCafeDetails>(_onLoadCafeDetails);
     on<LoadProducts>(_onLoadProducts);
     on<LoadMoreProducts>(_onLoadMoreProducts);
     on<LoadProductDetails>(_onLoadProductDetails);
-    on<AddToCart>(_onAddToCart);
-    on<UpdateCartItemQuantity>(_onUpdateCartItemQuantity);
-    on<RemoveFromCart>(_onRemoveFromCart);
-    on<ClearCart>(_onClearCart);
+   // on<AddToCartFromProduct>(_onAddToCartFromProduct);
+    on<ToggleAutoTokens>(_onToggleAutoTokens);
   }
 
   Future<void> _onLoadCafeDetails(
@@ -35,7 +45,19 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoading());
 
     try {
-      final result = await _productService.getCafeDetails(event.cafeId);
+      Map<String, dynamic> result;
+
+      if (_useAutoTokens) {
+        // Use automatic token management
+        result = await productService.getCafeDetails(event.cafeId);
+      } else {
+        // Use manual token (backward compatibility)
+        String token = await SharedPref.getString(SharedPrefKey.authTokenKey);
+        result = await productService.getCafeDetails(
+          event.cafeId,
+          token: token,
+        );
+      }
 
       if (result['success'] == true) {
         _currentCafe = result['data'];
@@ -45,10 +67,30 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         // Auto-load products for this cafe
         add(LoadProducts(cafeId: event.cafeId));
       } else {
-        emit(ProductError(message: result['message'] ?? 'Failed to load cafe details'));
+        emit(
+          ProductError(
+            message: result['message'] ?? 'Failed to load cafe details',
+          ),
+        );
       }
     } catch (e) {
-      emit(ProductError(message: 'Network error occurred'));
+      // Check if it's a token-related error and try to refresh
+      if (e.toString().contains('401') || e.toString().contains('unauthorized')) {
+        print('Token error detected, attempting refresh...');
+        try {
+          final refreshResult = await authService.refreshToken();
+          if (refreshResult['success'] == true) {
+            print('Token refreshed, retrying cafe details...');
+            // Retry the request
+            add(event);
+            return;
+          }
+        } catch (refreshError) {
+          print('Token refresh failed: $refreshError');
+        }
+      }
+
+      emit(ProductError(message: 'Network error occurred: ${e.toString()}'));
     }
   }
 
@@ -64,28 +106,65 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       _currentCafeId = event.cafeId;
       _currentPage = event.page;
 
-      final result = await _productService.getProducts(
-        cafeId: event.cafeId,
-        page: event.page,
-        limit: event.limit,
-      );
+      Map<String, dynamic> result;
+
+      if (_useAutoTokens) {
+        // Use automatic token management with enhanced parameters
+        result = await productService.getProductsAuto(
+          cafeId: event.cafeId,
+          page: event.page,
+          limit: event.limit,
+          category: event.category,
+          search: event.search,
+          isAvailable: event.isAvailable,
+        );
+      } else {
+        // Use manual token (backward compatibility)
+        String token = await SharedPref.getString(SharedPrefKey.authTokenKey);
+        result = await productService.getProducts(
+          cafeId: event.cafeId,
+          page: event.page,
+          limit: event.limit,
+          token: token,
+        );
+      }
 
       if (result['success'] == true) {
         _allProducts = result['data'];
         final meta = result['meta'] ?? {};
         final hasMore = meta['hasNextPage'] ?? false;
 
-        emit(ProductsLoaded(
-          products: _allProducts,
-          meta: meta,
-          hasMore: hasMore,
-          cafeId: event.cafeId,
-        ));
+        emit(
+          ProductsLoaded(
+            products: _allProducts,
+            meta: meta,
+            hasMore: hasMore,
+            cafeId: event.cafeId,
+          ),
+        );
       } else {
-        emit(ProductError(message: result['message'] ?? 'Failed to load products'));
+        emit(
+          ProductError(message: result['message'] ?? 'Failed to load products'),
+        );
       }
     } catch (e) {
-      emit(ProductError(message: 'Network error occurred'));
+      // Check if it's a token-related error and try to refresh
+      if (e.toString().contains('401') || e.toString().contains('unauthorized')) {
+        print('Token error detected, attempting refresh...');
+        try {
+          final refreshResult = await authService.refreshToken();
+          if (refreshResult['success'] == true) {
+            print('Token refreshed, retrying products...');
+            // Retry the request
+            add(event);
+            return;
+          }
+        } catch (refreshError) {
+          print('Token refresh failed: $refreshError');
+        }
+      }
+
+      emit(ProductError(message: 'Network error occurred: ${e.toString()}'));
     }
   }
 
@@ -103,11 +182,25 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       try {
         final nextPage = _currentPage + 1;
 
-        final result = await _productService.getProducts(
-          cafeId: _currentCafeId!,
-          page: nextPage,
-          limit: 10,
-        );
+        Map<String, dynamic> result;
+
+        if (_useAutoTokens) {
+          // Use automatic token management
+          result = await productService.getProductsAuto(
+            cafeId: _currentCafeId!,
+            page: nextPage,
+            limit: 10,
+          );
+        } else {
+          // Use manual token (backward compatibility)
+          String token = await SharedPref.getString(SharedPrefKey.authTokenKey);
+          result = await productService.getProducts(
+            cafeId: _currentCafeId!,
+            page: nextPage,
+            limit: 10,
+            token: token,
+          );
+        }
 
         if (result['success'] == true) {
           final newProducts = result['data'] as List<ProductModel>;
@@ -118,17 +211,39 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           _allProducts = allProducts;
           _currentPage = nextPage;
 
-          emit(ProductsLoaded(
-            products: allProducts,
-            meta: meta,
-            hasMore: hasMore,
-            cafeId: _currentCafeId!,
-          ));
+          emit(
+            ProductsLoaded(
+              products: allProducts,
+              meta: meta,
+              hasMore: hasMore,
+              cafeId: _currentCafeId!,
+            ),
+          );
         } else {
-          emit(ProductError(message: result['message'] ?? 'Failed to load more products'));
+          emit(
+            ProductError(
+              message: result['message'] ?? 'Failed to load more products',
+            ),
+          );
         }
       } catch (e) {
-        emit(ProductError(message: 'Network error occurred'));
+        // Check if it's a token-related error and try to refresh
+        if (e.toString().contains('401') || e.toString().contains('unauthorized')) {
+          print('Token error detected, attempting refresh...');
+          try {
+            final refreshResult = await authService.refreshToken();
+            if (refreshResult['success'] == true) {
+              print('Token refreshed, retrying load more products...');
+              // Retry the request
+              add(event);
+              return;
+            }
+          } catch (refreshError) {
+            print('Token refresh failed: $refreshError');
+          }
+        }
+
+        emit(ProductError(message: 'Network error occurred: ${e.toString()}'));
       }
     }
   }
@@ -140,107 +255,141 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoading());
 
     try {
-      final result = await _productService.getProductDetails(event.productId);
+      Map<String, dynamic> result;
+
+      if (_useAutoTokens) {
+        // Use automatic token management
+        result = await productService.getProductDetailsAuto(event.productId);
+      } else {
+        // Use manual token (backward compatibility)
+        String token = await SharedPref.getString(SharedPrefKey.authTokenKey);
+        result = await productService.getProductDetails(
+          event.productId,
+          token: token,
+        );
+      }
 
       if (result['success'] == true) {
         final product = result['data'];
         emit(ProductDetailsLoaded(product: product));
       } else {
-        emit(ProductError(message: result['message'] ?? 'Failed to load product details'));
-      }
-    } catch (e) {
-      emit(ProductError(message: 'Network error occurred'));
-    }
-  }
-
-  Future<void> _onAddToCart(
-      AddToCart event,
-      Emitter<ProductState> emit,
-      ) async {
-    // Check if product already exists in cart
-    final existingItemIndex = _cartItems.indexWhere(
-          (item) => item.product.id == event.product.id,
-    );
-
-    if (existingItemIndex != -1) {
-      // Update existing item
-      final existingItem = _cartItems[existingItemIndex];
-      _cartItems[existingItemIndex] = existingItem.copyWith(
-        quantity: existingItem.quantity + event.quantity,
-      );
-    } else {
-      // Add new item
-      _cartItems.add(CartItem(
-        product: event.product,
-        quantity: event.quantity,
-        customizations: event.customizations,
-        specialInstructions: event.specialInstructions,
-      ));
-    }
-
-    final totalAmount = _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
-
-    // emit(CartUpdated(
-    //   cartItems: List.from(_cartItems),
-    //   totalAmount: totalAmount,
-    // ));
-  }
-
-  Future<void> _onUpdateCartItemQuantity(
-      UpdateCartItemQuantity event,
-      Emitter<ProductState> emit,
-      ) async {
-    final itemIndex = _cartItems.indexWhere(
-          (item) => item.product.id == event.productId,
-    );
-
-    if (itemIndex != -1) {
-      if (event.quantity <= 0) {
-        _cartItems.removeAt(itemIndex);
-      } else {
-        _cartItems[itemIndex] = _cartItems[itemIndex].copyWith(
-          quantity: event.quantity,
+        emit(
+          ProductError(
+            message: result['message'] ?? 'Failed to load product details',
+          ),
         );
       }
+    } catch (e) {
+      // Check if it's a token-related error and try to refresh
+      if (e.toString().contains('401') || e.toString().contains('unauthorized')) {
+        print('Token error detected, attempting refresh...');
+        try {
+          final refreshResult = await authService.refreshToken();
+          if (refreshResult['success'] == true) {
+            print('Token refreshed, retrying product details...');
+            // Retry the request
+            add(event);
+            return;
+          }
+        } catch (refreshError) {
+          print('Token refresh failed: $refreshError');
+        }
+      }
 
-      final totalAmount = _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
+      emit(ProductError(message: 'Network error occurred: ${e.toString()}'));
+    }
+  }
 
-      emit(CartUpdated(
-        cartItems: List.from(_cartItems),
-        totalAmount: totalAmount,
+  // Future<void> _onAddToCartFromProduct(
+  //     AddToCartFromProduct event,
+  //     Emitter<ProductState> emit,
+  //     ) async {
+  //   try {
+  //     // Convert customizations to the format expected by the API
+  //     final customizationsMap = <String, dynamic>{};
+  //
+  //
+  //     // Use CartBloc to add to cart via API
+  //     cartBloc.add(
+  //       AddToCartEvent(
+  //         productId: event.product.id,
+  //         quantity: event.quantity,
+  //         customizations: customizationsMap,
+  //       ),
+  //     );
+  //
+  //     emit(
+  //       ProductAddedToCart(
+  //         message: '${event.product.name} added to cart successfully',
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     emit(ProductError(message: 'Failed to add product to cart: ${e.toString()}'));
+  //   }
+  // }
+
+  // New event handler for toggling auto token feature
+  Future<void> _onToggleAutoTokens(
+      ToggleAutoTokens event,
+      Emitter<ProductState> emit,
+      ) async {
+    _useAutoTokens = event.enabled;
+
+    // Optionally emit a state to notify UI of the change
+    if (state is ProductsLoaded) {
+      final currentState = state as ProductsLoaded;
+      emit(ProductsLoaded(
+        products: currentState.products,
+        meta: currentState.meta,
+        hasMore: currentState.hasMore,
+        cafeId: currentState.cafeId,
+        autoTokensEnabled: _useAutoTokens,
       ));
     }
   }
 
-  Future<void> _onRemoveFromCart(
-      RemoveFromCart event,
-      Emitter<ProductState> emit,
-      ) async {
-    _cartItems.removeWhere((item) => item.product.id == event.productId);
+  // Helper method to check if auto tokens are enabled
+  bool get isAutoTokensEnabled => _useAutoTokens;
 
-    final totalAmount = _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
-
-    emit(CartUpdated(
-      cartItems: List.from(_cartItems),
-      totalAmount: totalAmount,
-    ));
+  // Method to manually refresh token
+  Future<bool> refreshToken() async {
+    try {
+      final result = await authService.refreshToken();
+      return result['success'] == true;
+    } catch (e) {
+      print('Manual token refresh failed: $e');
+      return false;
+    }
   }
 
-  Future<void> _onClearCart(
-      ClearCart event,
-      Emitter<ProductState> emit,
-      ) async {
-    _cartItems.clear();
-
-    emit(CartUpdated(
-      cartItems: [],
-      totalAmount: 0.0,
-    ));
+  // Method to validate current token
+  Future<bool> validateToken() async {
+    try {
+      final tokenResult = await authService.getValidToken();
+      return tokenResult['success'] == true;
+    } catch (e) {
+      print('Token validation failed: $e');
+      return false;
+    }
   }
 
-  // Getters
+  // Getters (fixed syntax)
   CafeModel? get currentCafe => _currentCafe;
   List<CartItem> get cartItems => List.from(_cartItems);
   double get cartTotal => _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
   int get cartItemCount => _cartItems.fold(0, (sum, item) => sum + item.quantity);
+  String? get currentCafeId => _currentCafeId;
+  int get currentPage => _currentPage;
+  List<ProductModel> get allProducts => List.from(_allProducts);
 }
+
+// Add this new event to your product_event.dart
+class ToggleAutoTokens extends ProductEvent {
+  final bool enabled;
+
+  ToggleAutoTokens({required this.enabled});
+}
+
+
+
+

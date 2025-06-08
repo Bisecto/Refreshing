@@ -1,5 +1,6 @@
 import '../cafe/cafe_model.dart';
 import '../cafe/category_model.dart';
+import 'customization_model.dart';
 
 class ProductModel {
   final String id;
@@ -17,6 +18,7 @@ class ProductModel {
   final CategoryModel category;
   final CafeModel? cafe;
   final List<ProductImage> images;
+  final List<CustomizationModel> customizations;
 
   ProductModel({
     required this.id,
@@ -34,6 +36,7 @@ class ProductModel {
     required this.category,
     this.cafe,
     required this.images,
+    required this.customizations,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -53,6 +56,7 @@ class ProductModel {
       category: CategoryModel.fromJson(json['category'] ?? {}),
       cafe: json['cafe'] != null ? CafeModel.fromJson(json['cafe']) : null,
       images: (json['images'] as List?)?.map((e) => ProductImage.fromJson(e)).toList() ?? [],
+      customizations: (json['customizations'] as List?)?.map((e) => CustomizationModel.fromJson(e)).toList() ?? [],
     );
   }
 
@@ -107,27 +111,5 @@ class ProductImage {
   }
 }
 
-class ProductCustomization {
-  final String type;
-  final String selectedValue;
-  final List<String> options;
 
-  ProductCustomization({
-    required this.type,
-    required this.selectedValue,
-    required this.options,
-  });
-
-  ProductCustomization copyWith({
-    String? type,
-    String? selectedValue,
-    List<String>? options,
-  }) {
-    return ProductCustomization(
-      type: type ?? this.type,
-      selectedValue: selectedValue ?? this.selectedValue,
-      options: options ?? this.options,
-    );
-  }
-}
 

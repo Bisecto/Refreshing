@@ -62,6 +62,7 @@ dependencies:
   social_login_buttons: ^1.0.7
   geolocator:
   geocoding:
+  jwt_decode:
 
 dev_dependencies:
   flutter_test:

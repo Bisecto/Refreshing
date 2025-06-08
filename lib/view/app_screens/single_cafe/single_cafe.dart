@@ -8,6 +8,8 @@ import 'package:refreshing_co/view/important_pages/dialog_box.dart';
 import 'package:refreshing_co/view/widgets/app_custom_text.dart';
 import 'package:refreshing_co/view/widgets/form_button.dart';
 
+import '../../../bloc/cart_bloc/cart_bloc.dart';
+import '../../../bloc/cart_bloc/cart_event.dart';
 import '../../../bloc/product_bloc/product_bloc.dart';
 import '../../../bloc/product_bloc/product_event.dart';
 import '../../../bloc/product_bloc/product_state.dart';
@@ -81,13 +83,11 @@ class _SingleCafeState extends State<SingleCafe> {
   void _addToCart(ProductModel product) {
     //final quantity = _getCounter(product.id);
     //if (quantity > 0) {
-    context.read<ProductBloc>().add(
-      AddToCart(
-        product: product,
-        quantity: 1,
-        customizations: [], // You can add customization logic here
-      ),
-    );
+    context.read<CartBloc>().add(AddToCartEvent(
+      productId: product.id,
+      quantity: 1,
+      customizations: [{}],
+    ));
     MSG.snackBar(context, '${product.name} added to cart');
 
     // Reset counter after adding to cart

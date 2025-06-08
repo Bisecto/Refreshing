@@ -14,19 +14,7 @@ class CafeDetailsLoaded extends ProductState {
   CafeDetailsLoaded({required this.cafe});
 }
 
-class ProductsLoaded extends ProductState {
-  final List<ProductModel> products;
-  final Map<String, dynamic> meta;
-  final bool hasMore;
-  final String cafeId;
 
-  ProductsLoaded({
-    required this.products,
-    required this.meta,
-    required this.hasMore,
-    required this.cafeId,
-  });
-}
 
 class ProductDetailsLoaded extends ProductState {
   final ProductModel product;
@@ -54,4 +42,24 @@ class ProductLoadingMore extends ProductState {
   final List<ProductModel> currentProducts;
 
   ProductLoadingMore({required this.currentProducts});
+}
+class ProductAddedToCart extends ProductState {
+  final String message;
+
+  ProductAddedToCart({required this.message});
+}
+class ProductsLoaded extends ProductState {
+  final List<ProductModel> products;
+  final Map<String, dynamic> meta;
+  final bool hasMore;
+  final String cafeId;
+  final bool? autoTokensEnabled;
+
+  ProductsLoaded({
+    required this.products,
+    required this.meta,
+    required this.hasMore,
+    required this.cafeId,
+    this.autoTokensEnabled,
+  });
 }

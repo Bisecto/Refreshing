@@ -1,9 +1,10 @@
+import 'package:refreshing_co/model/product/customization_model.dart';
 import 'package:refreshing_co/model/product/product_model.dart';
 
 class CartItem {
   final ProductModel product;
   final int quantity;
-  final List<ProductCustomization> customizations;
+  final List<CustomizationModel> customizations;
   final String? specialInstructions;
 
   CartItem({
@@ -18,7 +19,7 @@ class CartItem {
   CartItem copyWith({
     ProductModel? product,
     int? quantity,
-    List<ProductCustomization>? customizations,
+    List<CustomizationModel>? customizations,
     String? specialInstructions,
   }) {
     return CartItem(
