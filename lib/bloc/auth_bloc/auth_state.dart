@@ -36,11 +36,28 @@ class AuthError extends AuthState {
 
 class AuthSignedOut extends AuthState {}
 
+
+class TokenRefreshing extends AuthState {}
+
+class TokenRefreshed extends AuthState {
+  final String newToken;
+  final User user;
+
+  TokenRefreshed({required this.newToken, required this.user});
+}
+
 class AuthAuthenticated extends AuthState {
+  final Position position;
   final String token;
   final User user;
-  final Position position;
   final Placemark placemark;
+  final bool tokenWasRefreshed;
 
-  AuthAuthenticated( {required this.token, required this.user, required this.position, required this.placemark,});
+  AuthAuthenticated({
+    required this.position,
+    required this.token,
+    required this.user,
+    required this.placemark,
+    this.tokenWasRefreshed = false,
+  });
 }

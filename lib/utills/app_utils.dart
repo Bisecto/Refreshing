@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:encrypt/encrypt.dart' as prefix0;
 
@@ -64,7 +65,6 @@ class AppUtils {
     // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled
       return Future.error('Location services are disabled.');
     }
 
@@ -78,15 +78,23 @@ class AppUtils {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied.');
+      return Future.error('Location permissions are permanently denied.');
     }
 
-
-    // Get the current position
-    return await Geolocator.getLastKnownPosition(
-        //desiredAccuracy: LocationAccuracy.high
-    );
+    try {
+      // Try to get the current location with a timeout
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).timeout(
+        const Duration(seconds: 5),
+        // onTimeout must return Future<Position>
+        onTimeout: () => Geolocator.getLastKnownPosition()
+            .then((position) => position ?? (throw TimeoutException('No last known location'))),
+      );
+    } catch (e) {
+      // In case of any error, try to return the last known location
+      return await Geolocator.getLastKnownPosition();
+    }
   }
 
   // openApp(context) async {
@@ -133,6 +141,7 @@ class AppUtils {
 
     SharedPref.remove(SharedPrefKey.userDataKey);
     SharedPref.remove(SharedPrefKey.refreshTokenKey);
+    SharedPref.remove(SharedPrefKey.authTokenKey);
     SharedPref.remove(SharedPrefKey.hashedAccessPinKey);
     SharedPref.remove(SharedPrefKey.biometricKey);
   }
