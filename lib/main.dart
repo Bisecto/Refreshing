@@ -5,6 +5,7 @@ import 'package:refreshing_co/repository/auth_service.dart';
 import 'package:refreshing_co/repository/cafe_repository.dart';
 import 'package:refreshing_co/repository/cart_service.dart';
 import 'package:refreshing_co/repository/notification_service.dart';
+import 'package:refreshing_co/repository/notification_setting_service.dart';
 import 'package:refreshing_co/repository/product_service.dart';
 import 'package:refreshing_co/res/app_router.dart';
 import 'package:refreshing_co/view/app_screens/landing_page.dart';
@@ -15,6 +16,7 @@ import 'bloc/auth_bloc/auth_bloc.dart';
 import 'bloc/cafe_bloc/cafe_bloc.dart';
 import 'bloc/cart_bloc/cart_bloc.dart';
 import 'bloc/notification_bloc/notification_bloc.dart';
+import 'bloc/notification_setting_bloc/notification_settings_bloc.dart';
 import 'bloc/product_bloc/product_bloc.dart';
 
 void main() async {
@@ -57,6 +59,14 @@ class MyApp extends StatelessWidget {
             useAutoTokens: true, // Enable auto tokens
           ),
         ),
+        BlocProvider<NotificationSettingsBloc>(
+          create: (context) => NotificationSettingsBloc(
+            settingsService: NotificationSettingsService(
+
+            ),
+          ),
+        ),
+
         BlocProvider<NotificationBloc>(
           create: (context) => NotificationBloc(
             notificationService: NotificationService(
