@@ -4,10 +4,59 @@ import 'package:http/http.dart' as http;
 
 import '../model/cafe/adons.dart';
 import '../model/cafe/cafe_model.dart';
+import 'auth_service.dart';
 
 class CafeService {
   static const String baseUrl = 'https://api.refreshandco.com/api/v1';
+  final AuthRepository _authService;
+  CafeService({required AuthRepository authService}) : _authService = authService;
 
+  Future<String?> _getValidToken() async {
+    final tokenResult = await _authService.getValidToken();
+    if (tokenResult['success'] == true) {
+      return tokenResult['token'];
+    }
+    return null;
+  }
+
+  Future<http.Response> _makeAuthenticatedRequest(
+      Future<http.Response> Function(String token) request, {
+        int maxRetries = 1,
+      }) async {
+    for (int attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        final token = await _getValidToken();
+        if (token == null) {
+          throw Exception('No valid token available');
+        }
+
+        final response = await request(token);
+
+        // If unauthorized and we haven't retried yet, try to refresh token
+        if (response.statusCode == 401 && attempt < maxRetries) {
+          print(
+            '401 received, attempting token refresh (attempt ${attempt + 1})...',
+          );
+
+          final refreshResult = await _authService.refreshToken();
+          if (refreshResult['success'] == true) {
+            print('Token refreshed successfully, retrying request...');
+            continue; // Retry with new token
+          } else {
+            print('Token refresh failed: ${refreshResult['message']}');
+            break; // Don't retry if refresh failed
+          }
+        }
+
+        return response;
+      } catch (e) {
+        if (attempt == maxRetries) rethrow;
+        print('Request failed (attempt ${attempt + 1}): $e');
+      }
+    }
+
+    throw Exception('Request failed after $maxRetries retries');
+  }
   Future<Map<dynamic, dynamic>> searchCafes(CafeSearchRequest request,String token) async {
     try {
       print(request.toJson());
@@ -15,14 +64,29 @@ class CafeService {
         queryParameters: request.toJson().map((key, value) => MapEntry(key, value.toString())),
       );
 
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      late http.Response response;
 
+      if (token != null) {
+        // Use provided token (backward compatibility)
+        response = await http.get(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+      } else {
+        // Use auto-refresh token system
+        response = await _makeAuthenticatedRequest(
+              (validToken) => http.get(
+            uri,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $validToken',
+            },
+          ),
+        );
+      }
       final responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -54,14 +118,34 @@ class CafeService {
 
   Future<Map<String, dynamic>> getFilterOptions(String token) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/search/filter-options'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      final uri =
+      Uri.parse('$baseUrl/search/filter-options');
 
+
+    //  final responseData = json.decode(response.body);
+      late http.Response response;
+
+      if (token != null) {
+        // Use provided token (backward compatibility)
+        response = await http.get(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+      } else {
+        // Use auto-refresh token system
+        response = await _makeAuthenticatedRequest(
+              (validToken) => http.get(
+            uri,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $validToken',
+            },
+          ),
+        );
+      }
       final responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -136,14 +220,36 @@ class CafeService {
           if (radius != null) 'radius': radius.toString(),
         },
       );
+      late http.Response response;
 
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      if (token != null) {
+        // Use provided token (backward compatibility)
+        response = await http.get(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+      } else {
+        // Use auto-refresh token system
+        response = await _makeAuthenticatedRequest(
+              (validToken) => http.get(
+            uri,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $validToken',
+            },
+          ),
+        );
+      }
+      // final response = await http.get(
+      //   uri,
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': 'Bearer $token',
+      //   },
+      // );
 
       final responseData = json.decode(response.body);
 

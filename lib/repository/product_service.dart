@@ -4,12 +4,12 @@ import 'package:refreshing_co/repository/auth_service.dart';
 import '../model/cafe/cafe_model.dart';
 import '../model/product/product_model.dart';
 
-
 class ProductService {
   static const String baseUrl = 'https://api.refreshandco.com/api/v1';
   final AuthRepository _authService;
 
-  ProductService({required AuthRepository authService}) : _authService = authService;
+  ProductService({required AuthRepository authService})
+    : _authService = authService;
 
   // Helper method to get valid token
   Future<String?> _getValidToken() async {
@@ -22,9 +22,9 @@ class ProductService {
 
   // Helper method to make authenticated request with auto-retry
   Future<http.Response> _makeAuthenticatedRequest(
-      Future<http.Response> Function(String token) request,
-      {int maxRetries = 1}
-      ) async {
+    Future<http.Response> Function(String token) request, {
+    int maxRetries = 1,
+  }) async {
     for (int attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         final token = await _getValidToken();
@@ -36,7 +36,9 @@ class ProductService {
 
         // If unauthorized and we haven't retried yet, try to refresh token
         if (response.statusCode == 401 && attempt < maxRetries) {
-          print('401 received, attempting token refresh (attempt ${attempt + 1})...');
+          print(
+            '401 received, attempting token refresh (attempt ${attempt + 1})...',
+          );
 
           final refreshResult = await _authService.refreshToken();
           if (refreshResult['success'] == true) {
@@ -88,7 +90,7 @@ class ProductService {
       } else {
         // Use auto-refresh token system
         response = await _makeAuthenticatedRequest(
-              (validToken) => http.get(
+          (validToken) => http.get(
             uri,
             headers: {
               'Content-Type': 'application/json',
@@ -102,9 +104,11 @@ class ProductService {
       print('Products response: $responseData');
 
       if (response.statusCode == 200) {
-        final products = (responseData['data'] as List?)
-            ?.map((e) => ProductModel.fromJson(e))
-            .toList() ?? [];
+        final products =
+            (responseData['data'] as List?)
+                ?.map((e) => ProductModel.fromJson(e))
+                .toList() ??
+            [];
 
         return {
           'success': true,
@@ -119,17 +123,14 @@ class ProductService {
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Network error occurred: $e',
-      };
+      return {'success': false, 'message': 'Network error occurred: $e'};
     }
   }
 
   Future<Map<String, dynamic>> getCafeDetails(
-      String cafeId, {
-        String? token, // Made optional
-      }) async {
+    String cafeId, {
+    String? token, // Made optional
+  }) async {
     try {
       late http.Response response;
 
@@ -145,7 +146,7 @@ class ProductService {
       } else {
         // Use auto-refresh token system
         response = await _makeAuthenticatedRequest(
-              (validToken) => http.get(
+          (validToken) => http.get(
             Uri.parse('$baseUrl/cafes/$cafeId'),
             headers: {
               'Content-Type': 'application/json',
@@ -160,10 +161,7 @@ class ProductService {
 
       if (response.statusCode == 200) {
         final cafe = CafeModel.fromJson(responseData['data'] ?? responseData);
-        return {
-          'success': true,
-          'data': cafe,
-        };
+        return {'success': true, 'data': cafe};
       } else {
         return {
           'success': false,
@@ -172,17 +170,14 @@ class ProductService {
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Network error occurred: $e',
-      };
+      return {'success': false, 'message': 'Network error occurred: $e'};
     }
   }
 
   Future<Map<String, dynamic>> getProductDetails(
-      String productId, {
-        String? token, // Made optional
-      }) async {
+    String productId, {
+    String? token, // Made optional
+  }) async {
     try {
       late http.Response response;
 
@@ -198,7 +193,7 @@ class ProductService {
       } else {
         // Use auto-refresh token system
         response = await _makeAuthenticatedRequest(
-              (validToken) => http.get(
+          (validToken) => http.get(
             Uri.parse('$baseUrl/products/$productId'),
             headers: {
               'Content-Type': 'application/json',
@@ -212,23 +207,20 @@ class ProductService {
       print('Product details response: $responseData');
 
       if (response.statusCode == 200) {
-        final product = ProductModel.fromJson(responseData['data'] ?? responseData);
-        return {
-          'success': true,
-          'data': product,
-        };
+        final product = ProductModel.fromJson(
+          responseData['data'] ?? responseData,
+        );
+        return {'success': true, 'data': product};
       } else {
         return {
           'success': false,
-          'message': responseData['message'] ?? 'Failed to fetch product details',
+          'message':
+              responseData['message'] ?? 'Failed to fetch product details',
           'statusCode': response.statusCode,
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Network error occurred: $e',
-      };
+      return {'success': false, 'message': 'Network error occurred: $e'};
     }
   }
 
@@ -242,7 +234,9 @@ class ProductService {
     bool? isAvailable,
   }) async {
     try {
-      final uri = Uri.parse('$baseUrl/products?includeCustomizations=true').replace(
+      final uri = Uri.parse(
+        '$baseUrl/products?includeCustomizations=true',
+      ).replace(
         queryParameters: {
           'cafeId': cafeId,
           'page': page.toString(),
@@ -254,7 +248,7 @@ class ProductService {
       );
 
       final response = await _makeAuthenticatedRequest(
-            (validToken) => http.get(
+        (validToken) => http.get(
           uri,
           headers: {
             'Content-Type': 'application/json',
@@ -267,9 +261,11 @@ class ProductService {
       print('Products response: $responseData');
 
       if (response.statusCode == 200) {
-        final products = (responseData['data'] as List?)
-            ?.map((e) => ProductModel.fromJson(e))
-            .toList() ?? [];
+        final products =
+            (responseData['data'] as List?)
+                ?.map((e) => ProductModel.fromJson(e))
+                .toList() ??
+            [];
 
         return {
           'success': true,
@@ -284,17 +280,14 @@ class ProductService {
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Network error occurred: $e',
-      };
+      return {'success': false, 'message': 'Network error occurred: $e'};
     }
   }
 
   Future<Map<String, dynamic>> getCafeDetailsAuto(String cafeId) async {
     try {
       final response = await _makeAuthenticatedRequest(
-            (validToken) => http.get(
+        (validToken) => http.get(
           Uri.parse('$baseUrl/cafes/$cafeId'),
           headers: {
             'Content-Type': 'application/json',
@@ -308,10 +301,7 @@ class ProductService {
 
       if (response.statusCode == 200) {
         final cafe = CafeModel.fromJson(responseData['data'] ?? responseData);
-        return {
-          'success': true,
-          'data': cafe,
-        };
+        return {'success': true, 'data': cafe};
       } else {
         return {
           'success': false,
@@ -320,17 +310,14 @@ class ProductService {
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Network error occurred: $e',
-      };
+      return {'success': false, 'message': 'Network error occurred: $e'};
     }
   }
 
   Future<Map<String, dynamic>> getProductDetailsAuto(String productId) async {
     try {
       final response = await _makeAuthenticatedRequest(
-            (validToken) => http.get(
+        (validToken) => http.get(
           Uri.parse('$baseUrl/products/$productId'),
           headers: {
             'Content-Type': 'application/json',
@@ -343,23 +330,20 @@ class ProductService {
       print('Product details response: $responseData');
 
       if (response.statusCode == 200) {
-        final product = ProductModel.fromJson(responseData['data'] ?? responseData);
-        return {
-          'success': true,
-          'data': product,
-        };
+        final product = ProductModel.fromJson(
+          responseData['data'] ?? responseData,
+        );
+        return {'success': true, 'data': product};
       } else {
         return {
           'success': false,
-          'message': responseData['message'] ?? 'Failed to fetch product details',
+          'message':
+              responseData['message'] ?? 'Failed to fetch product details',
           'statusCode': response.statusCode,
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Network error occurred: $e',
-      };
+      return {'success': false, 'message': 'Network error occurred: $e'};
     }
   }
 

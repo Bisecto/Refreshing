@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/cart_model.dart';
+import '../../repository/auth_service.dart';
 import '../../repository/cart_service.dart';
 import '../../res/sharedpref_key.dart';
 import '../../utills/shared_preferences.dart';
@@ -10,9 +11,12 @@ import 'cart_state.dart';
 class CartBloc extends Bloc<CartEvent, CartState> {
   final CartService _cartService;
   CartSummaryWithItemsList? _currentCartSummary;
+  final AuthRepository authService;
+  bool _useAutoTokens = true;
+  CartBloc({required CartService cartService, required this.authService,
 
-  CartBloc({required CartService cartService})
-    : _cartService = cartService,
+    bool useAutoTokens = true,})
+    :_useAutoTokens = useAutoTokens, _cartService = cartService,
       super(CartInitial()) {
     on<LoadCart>(_onLoadCart);
     on<AddToCartEvent>(_onAddToCart);

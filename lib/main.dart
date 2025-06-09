@@ -42,37 +42,56 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AuthBloc(authService: AuthRepository())..add(CheckAuthStatus()),
-
+          create:
+              (context) =>
+                  AuthBloc(authService: AuthRepository())
+                    ..add(CheckAuthStatus()),
         ),
         BlocProvider(
-          create: (context) => CafeBloc(cafeService: CafeService()),
+          create:
+              (context) => CafeBloc(
+                cafeService: CafeService(authService: AuthRepository()),
+                authService: AuthRepository(),
+                useAutoTokens: true,
+              ),
         ),
         BlocProvider(
-          create: (context) => CartBloc(cartService: CartService()),
+          create:
+              (context) => CartBloc(
+                cartService: CartService(authService: AuthRepository()),
+                authService: AuthRepository(),
+                useAutoTokens: true,
+              ),
         ),
         BlocProvider(
-          create: (context) => ProductBloc(
-            productService: ProductService(authService: AuthRepository()),
-            authService: AuthRepository(),
-            cartBloc: context.read<CartBloc>(),
-            useAutoTokens: true, // Enable auto tokens
-          ),
+          create:
+              (context) => ProductBloc(
+                productService: ProductService(authService: AuthRepository()),
+                authService: AuthRepository(),
+                cartBloc: context.read<CartBloc>(),
+                useAutoTokens: true, // Enable auto tokens
+              ),
         ),
         BlocProvider<NotificationSettingsBloc>(
-          create: (context) => NotificationSettingsBloc(
-            settingsService: NotificationSettingsService(
-
-            ),
-          ),
+          create:
+              (context) => NotificationSettingsBloc(
+                settingsService: NotificationSettingsService(
+                  authService: AuthRepository(),
+                ),
+                authService: AuthRepository(),
+                useAutoTokens: true,
+              ),
         ),
 
         BlocProvider<NotificationBloc>(
-          create: (context) => NotificationBloc(
-            notificationService: NotificationService(
-
-            ),
-          ),
+          create:
+              (context) => NotificationBloc(
+                notificationService: NotificationService(
+                  authService: AuthRepository(),
+                ),
+                authService: AuthRepository(),
+                useAutoTokens: true, // Enable auto tokens
+              ),
         ),
       ],
       child: MaterialApp(
@@ -85,6 +104,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({Key? key}) : super(key: key);
 
@@ -169,7 +189,6 @@ class AuthWrapper extends StatelessWidget {
         return LandingPage(selectedIndex: 0);
 
       case AuthSignUpSuccess:
-
         return const SignInScreen();
 
       case TokenRefreshed:

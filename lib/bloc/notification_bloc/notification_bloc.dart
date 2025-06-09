@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../model/notification/notification_model.dart';
+import '../../repository/auth_service.dart';
 import '../../repository/notification_service.dart';
 import '../../res/sharedpref_key.dart';
 import '../../utills/shared_preferences.dart';
@@ -10,9 +11,12 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final NotificationService _notificationService;
   List<NotificationModel> _currentNotifications = [];
   int _currentUnreadCount = 0;
+  final AuthRepository authService;
+  bool _useAutoTokens = true;
+  NotificationBloc({required NotificationService notificationService, required this.authService,
 
-  NotificationBloc({required NotificationService notificationService})
-    : _notificationService = notificationService,
+    bool useAutoTokens = true,})
+    :_useAutoTokens = useAutoTokens, _notificationService = notificationService,
       super(NotificationInitial()) {
     on<LoadNotificationsEvent>(_onLoadNotifications);
     on<LoadUnreadCountEvent>(_onLoadUnreadCount);

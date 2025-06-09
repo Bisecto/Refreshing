@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../model/notification/notification_setting.dart';
+import '../../repository/auth_service.dart';
 import '../../repository/notification_setting_service.dart';
 import '../../res/sharedpref_key.dart';
 import '../../utills/shared_preferences.dart';
@@ -10,9 +11,12 @@ class NotificationSettingsBloc extends Bloc<NotificationSettingsEvent, Notificat
   final NotificationSettingsService _settingsService;
   NotificationSettingsModel? _currentSettings;
   NotificationSettingsModel? _originalSettings;
+  final AuthRepository authService;
+  bool _useAutoTokens = true;
+  NotificationSettingsBloc({required NotificationSettingsService settingsService, required this.authService,
 
-  NotificationSettingsBloc({required NotificationSettingsService settingsService})
-      : _settingsService = settingsService,
+    bool useAutoTokens = true,})
+      : _useAutoTokens = useAutoTokens,_settingsService = settingsService,
         super(NotificationSettingsInitial()) {
     on<LoadNotificationSettingsEvent>(_onLoadSettings);
     on<UpdateNotificationSettingEvent>(_onUpdateSetting);

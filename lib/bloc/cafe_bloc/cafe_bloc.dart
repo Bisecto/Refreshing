@@ -3,6 +3,7 @@ import 'package:refreshing_co/res/sharedpref_key.dart';
 import 'package:refreshing_co/utills/shared_preferences.dart';
 import '../../model/cafe/adons.dart';
 import '../../model/cafe/cafe_model.dart';
+import '../../repository/auth_service.dart';
 import '../../repository/cafe_repository.dart';
 import 'cafe_event.dart';
 import 'cafe_state.dart';
@@ -13,9 +14,13 @@ class CafeBloc extends Bloc<CafeEvent, CafeState> {
   CafeSearchRequest _currentRequest = CafeSearchRequest();
   List<CafeModel> _allCafes = [];
   Set<String> _favoriteCafeIds = {};
+  final AuthRepository authService;
+  bool _useAutoTokens = true;
 
-  CafeBloc({required CafeService cafeService})
-    : _cafeService = cafeService,
+  CafeBloc({required CafeService cafeService, required this.authService,
+
+    bool useAutoTokens = true,})
+    : _useAutoTokens = useAutoTokens,_cafeService = cafeService,
       super(CafeInitial()) {
     on<LoadFilterOptions>(_onLoadFilterOptions);
     on<SearchCafes>(_onSearchCafes);

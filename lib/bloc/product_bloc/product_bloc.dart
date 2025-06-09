@@ -14,6 +14,8 @@ import '../cart_bloc/cart_event.dart';
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final ProductService productService;
   final AuthRepository authService;
+  bool _useAutoTokens = true; // Toggle for migration
+
   final CartBloc cartBloc;
 
   CafeModel? _currentCafe;
@@ -21,12 +23,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   List<CartItem> _cartItems = [];
   String? _currentCafeId;
   int _currentPage = 1;
-  bool _useAutoTokens = true; // Toggle for migration
 
   ProductBloc({
     required this.productService,
-    required this.authService,
     required this.cartBloc,
+    required this.authService,
+
     bool useAutoTokens = true, // Default to using auto tokens
   }) : _useAutoTokens = useAutoTokens,
         super(ProductInitial()) {
