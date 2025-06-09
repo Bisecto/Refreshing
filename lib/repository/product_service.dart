@@ -20,7 +20,6 @@ class ProductService {
     return null;
   }
 
-  // Helper method to make authenticated request with auto-retry
   Future<http.Response> _makeAuthenticatedRequest(
     Future<http.Response> Function(String token) request, {
     int maxRetries = 1,
@@ -60,7 +59,6 @@ class ProductService {
     throw Exception('Request failed after $maxRetries retries');
   }
 
-  // Option 1: Keep your current signature but make token optional
   Future<Map<String, dynamic>> getProducts({
     required String cafeId,
     int page = 1,

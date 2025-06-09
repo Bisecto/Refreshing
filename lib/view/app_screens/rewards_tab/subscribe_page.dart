@@ -200,6 +200,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               CustomText(
                 text: subtitle,
                 size: 14,
+                maxLines: 4,
                 color: AppColors.textColor,
               ),
             ],
