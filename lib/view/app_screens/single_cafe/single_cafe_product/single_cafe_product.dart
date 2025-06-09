@@ -298,23 +298,24 @@ class _SingleCafeProductState extends State<SingleCafeProduct> {
                         ),
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: AppColors.black.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Icon(
-                            Icons.share,
-                            color: AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+                    SizedBox()
+                    // Container(
+                    //   height: 50,
+                    //   width: 50,
+                    //   decoration: BoxDecoration(
+                    //     color: AppColors.black.withOpacity(0.5),
+                    //     borderRadius: BorderRadius.circular(100),
+                    //   ),
+                    //   child: const Center(
+                    //     child: Padding(
+                    //       padding: EdgeInsets.all(10.0),
+                    //       child: Icon(
+                    //         Icons.share,
+                    //         color: AppColors.white,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

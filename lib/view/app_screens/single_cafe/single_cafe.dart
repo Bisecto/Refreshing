@@ -80,22 +80,22 @@ class _SingleCafeState extends State<SingleCafe> {
   //   return _productCounters[productId] ?? 0;
   // }
 
-  void _addToCart(ProductModel product) {
-    //final quantity = _getCounter(product.id);
-    //if (quantity > 0) {
-    context.read<CartBloc>().add(AddToCartEvent(
-      productId: product.id,
-      quantity: 1,
-      customizations: [{}],
-    ));
-    MSG.snackBar(context, '${product.name} added to cart');
-
-    // Reset counter after adding to cart
-    // setState(() {
-    //   _productCounters[product.id] = 0;
-    // });
-    // }
-  }
+  // void _addToCart(ProductModel product) {
+  //   //final quantity = _getCounter(product.id);
+  //   //if (quantity > 0) {
+  //   context.read<CartBloc>().add(AddToCartEvent(
+  //     productId: product.id,
+  //     quantity: 1,
+  //     customizations: [{}],
+  //   ));
+  //   MSG.snackBar(context, '${product.name} added to cart');
+  //
+  //   // Reset counter after adding to cart
+  //   // setState(() {
+  //   //   _productCounters[product.id] = 0;
+  //   // });
+  //   // }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -291,8 +291,8 @@ class _SingleCafeState extends State<SingleCafe> {
         Padding(
           padding: const EdgeInsets.fromLTRB(10.0, 0, 10, 0),
           child: TextStyles.textDetails(
-            textValue:
-                cafe.description,textSize: 16,
+            textValue: cafe.description,
+            textSize: 16,
             textColor: AppColors.textColor,
           ),
         ),
@@ -436,7 +436,7 @@ class _SingleCafeState extends State<SingleCafe> {
   }
 
   Widget _buildMenuContainer(ProductModel product) {
-   // final counter = _getCounter(product.id);
+    // final counter = _getCounter(product.id);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(1.0, 0, 0, 10),
@@ -458,27 +458,6 @@ class _SingleCafeState extends State<SingleCafe> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Product Image
-                Container(
-                  height: 115,
-                  width: 115,
-                  decoration: BoxDecoration(
-                    color: AppColors.grey.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(15),
-                    image: DecorationImage(
-                      image:
-                          product.primaryImageUrl.isNotEmpty
-                              ? NetworkImage(product.primaryImageUrl)
-                              : const NetworkImage(
-                                'https://via.placeholder.com/115x115/f0f0f0/999999?text=No+Image',
-                              ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 5),
-
-                // Product Details
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -502,29 +481,6 @@ class _SingleCafeState extends State<SingleCafe> {
 
                       // Rating
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Row(
-                          children: [
-                            Row(
-                              children: List.generate(5, (index) {
-                                return Icon(
-                                  Icons.star,
-                                  color:
-                                      index < product.averageRating.floor()
-                                          ? AppColors.yellow
-                                          : AppColors.grey,
-                                  size: 15,
-                                );
-                              }),
-                            ),
-                            const SizedBox(width: 4),
-                            CustomText(text: "(${product.totalReviews})"),
-                          ],
-                        ),
-                      ),
-
-                      // Price and Quantity Controls
-                      Padding(
                         padding: const EdgeInsets.only(top: 10.0),
                         child: SizedBox(
                           width: AppUtils.deviceScreenSize(context).width / 2,
@@ -532,90 +488,53 @@ class _SingleCafeState extends State<SingleCafe> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // Price
+                              Row(
+                                children: [
+                                  Row(
+                                    children: List.generate(5, (index) {
+                                      return Icon(
+                                        Icons.star,
+                                        color:
+                                            index <
+                                                    product.averageRating
+                                                        .floor()
+                                                ? AppColors.yellow
+                                                : AppColors.grey,
+                                        size: 15,
+                                      );
+                                    }),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  CustomText(text: "(${product.totalReviews})"),
+                                ],
+                              ),
                               TextStyles.textHeadings(
                                 textValue: '£${product.basePrice}',
                               ),
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.black,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: IconButton(
-                                        icon: const Icon(Icons.add_shopping_cart),
-                                        onPressed: () {
-
-                                            _addToCart(product);
-
-                                        },
-                                        color: Colors.white,
-                                        iconSize: 15,
-                                      ),
-                                    ),
-                              // Quantity Controls
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: <Widget>[
-                              //     // Minus button
-                              //     Container(
-                              //       height: 30,
-                              //       width: 30,
-                              //       decoration: const BoxDecoration(
-                              //         color: Colors.black,
-                              //         shape: BoxShape.circle,
-                              //       ),
-                              //       child: IconButton(
-                              //         icon: const Icon(Icons.remove),
-                              //         onPressed:
-                              //             () => _decrementCounter(product.id),
-                              //         color: Colors.white,
-                              //         iconSize: 15,
-                              //       ),
-                              //     ),
-                              //
-                              //     // Display counter
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //         horizontal: 20.0,
-                              //       ),
-                              //       child: TextStyles.textHeadings(
-                              //         textValue: '$counter',
-                              //         textSize: 16,
-                              //         textColor: AppColors.black,
-                              //       ),
-                              //     ),
-                              //
-                              //     // Add button
-                              //     Container(
-                              //       height: 30,
-                              //       width: 30,
-                              //       decoration: const BoxDecoration(
-                              //         color: Colors.black,
-                              //         shape: BoxShape.circle,
-                              //       ),
-                              //       child: Center(
-                              //         child: IconButton(
-                              //           icon: const Icon(Icons.add),
-                              //           onPressed: () {
-                              //             _incrementCounter(product.id);
-                              //             if (counter >= 0) {
-                              //               _addToCart(product);
-                              //             }
-                              //           },
-                              //           color: Colors.white,
-                              //           iconSize: 15,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ],
-                               ),
                             ],
                           ),
                         ),
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(width: 5),
+
+                Container(
+                  height: 115,
+                  width: 115,
+                  decoration: BoxDecoration(
+                    color: AppColors.grey.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                      image:
+                          product.primaryImageUrl.isNotEmpty
+                              ? NetworkImage(product.primaryImageUrl)
+                              : const NetworkImage(
+                                'https://via.placeholder.com/115x115/f0f0f0/999999?text=No+Image',
+                              ),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ],
