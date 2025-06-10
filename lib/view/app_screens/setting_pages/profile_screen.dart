@@ -127,11 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // Email Row
                       buildInfoRow('Email', userEmail),
                       SizedBox(height: 20),
-                      // Phone Number Row
-                      buildInfoRow('Phone Number', userPhone),
-                      SizedBox(height: 20),
-                      // Date Joined Row
-                      // buildInfoRow('Date Joined', dateJoined),
+
                       Spacer(),
                       // Update Button
                       FormButton(onPressed: (){},text: 'Update',bgColor: AppColors.appMainColor,),

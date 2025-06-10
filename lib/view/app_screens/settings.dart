@@ -9,6 +9,7 @@ import 'package:refreshing_co/view/widgets/form_button.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../auth/sign_in_screen.dart';
+import 'account.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -35,18 +36,27 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   InkWell(
-                      onTap: () {
-                        AppNavigator.pushAndStackPage(context,
-                            page: ProfilePage());
-                      },
-                      child: _buildSettingsOption('Profile')),
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(
+                        context,
+                        page: ProfilePage(),
+                      );
+                    },
+                    child: _buildSettingsOption('Profile'),
+                  ),
+                  InkWell(onTap:(){
+                    AppNavigator.pushAndStackPage(context, page: AccountScreen());
+                  },child: _buildSettingsOption('My Account')),
                   _buildSettingsOption('Payment Methods'),
                   InkWell(
-                      onTap: () {
-                        AppNavigator.pushAndStackPage(context,
-                            page: NotificationSettingsScreen());
-                      },
-                      child: _buildSettingsOption('Notification')),
+                    onTap: () {
+                      AppNavigator.pushAndStackPage(
+                        context,
+                        page: NotificationSettingsScreen(),
+                      );
+                    },
+                    child: _buildSettingsOption('Notification'),
+                  ),
                   _buildSettingsOption('Settings'),
                   _buildSettingsOption('Feedback'),
                   _buildSettingsOption('Legal'),
@@ -61,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
                 if (state is AuthSignedOut) {
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (_) => const SignInScreen()),
-                        (route) => false,
+                    (route) => false,
                   );
                 }
               },
@@ -74,13 +84,14 @@ class SettingsScreen extends StatelessWidget {
                 textColor: AppColors.black,
               ),
             ),
-            // Logout button
 
+            // Logout button
           ],
         ),
       ),
     );
   }
+
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -111,15 +122,13 @@ class SettingsScreen extends StatelessWidget {
       },
     );
   }
+
   Widget _buildSettingsOption(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: CustomText(
-          text: title,
-          size: 18,
-        ),
+        child: CustomText(text: title, size: 18),
       ),
     );
   }
